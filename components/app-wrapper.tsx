@@ -159,7 +159,7 @@ export function AppWrapper() {
     }
   }
 
-  const handleSpeak = async (section: string, text: string) => {
+  const handleSpeak = async (section: string, text: string): Promise<HTMLAudioElement> => {
     if (audioRef.current) {
       audioRef.current.pause()
       audioRef.current = null
@@ -173,6 +173,14 @@ export function AppWrapper() {
       }
     }
     audio.play()
+    return audio
+  }
+
+  const handleStopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current = null
+    }
   }
 
   const handleGenerateImage = async (prompt: string) => {
@@ -234,6 +242,7 @@ export function AppWrapper() {
             toggleTheme={toggleTheme}
             onRegenerate={() => handleGeneratePlan(userData)}
             onSpeak={handleSpeak}
+            onStopAudio={handleStopAudio}
             onGenerateImage={handleGenerateImage}
             onUpdateProfile={handleUpdateProfile}
             onLogout={handleLogout}

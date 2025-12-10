@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import type { UserData } from "../app-wrapper"
 import type { PlanContent, WorkoutItem, MealItem } from "@/lib/plan-types"
-import { Download, Volume2, Zap, Moon, Sun, ImageIcon, LayoutGrid } from "lucide-react"
+import { Download, Volume2, Zap, Moon, Sun, ImageIcon, LayoutGrid, Loader2, Square } from "lucide-react"
 import { ProfileSettingsDialog } from "./profile-settings-dialog"
 
 interface DashboardPageProps {
@@ -14,20 +14,20 @@ interface DashboardPageProps {
   theme: "dark" | "light"
   toggleTheme: () => void
   onRegenerate: () => void
-  onSpeak: (section: string, text: string) => Promise<void>
+  onSpeak: (section: string, text: string) => Promise<HTMLAudioElement>
+  onStopAudio: () => void
   onGenerateImage: (prompt: string) => Promise<string>
   onUpdateProfile: (updatedData: Partial<UserData>) => Promise<void>
   onLogout: () => void
 }
 
-export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpeak, onGenerateImage, onUpdateProfile, onLogout }: DashboardPageProps) {
+export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpeak, onStopAudio, onGenerateImage, onUpdateProfile, onLogout }: DashboardPageProps) {
   const [activeView, setActiveView] = useState<"overview" | "workout" | "diet">("overview")
   const [imageLoading, setImageLoading] = useState<string | null>(null)
   const [localPlan, setLocalPlan] = useState<PlanContent>(plan)
   const [isExporting, setIsExporting] = useState(false)
-  const [audioCooldown, setAudioCooldown] = useState(false)
-  const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const cooldownMs = 3000
+  const [playingAudioId, setPlayingAudioId] = useState<string | null>(null)
+  const [audioLoadingId, setAudioLoadingId] = useState<string | null>(null)
 
   useEffect(() => {
     setLocalPlan(plan)
@@ -56,26 +56,28 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
 
   const isWorkout = (item: WorkoutItem | MealItem): item is WorkoutItem => (item as WorkoutItem).sets !== undefined
 
-  useEffect(() => {
-    return () => {
-      if (cooldownRef.current) {
-        clearTimeout(cooldownRef.current)
-      }
+  const handleAudioToggle = async (id: string, section: string, text: string) => {
+    if (playingAudioId === id) {
+      onStopAudio()
+      setPlayingAudioId(null)
+      return
     }
-  }, [])
 
-  const speakWithCooldown = async (section: string, text: string) => {
-    if (audioCooldown) return
-    setAudioCooldown(true)
+    if (playingAudioId !== null || audioLoadingId !== null) {
+      return
+    }
+
+    setAudioLoadingId(id)
     try {
-      await onSpeak(section, text)
-    } finally {
-      if (cooldownRef.current) {
-        clearTimeout(cooldownRef.current)
+      const audio = await onSpeak(section, text)
+      setPlayingAudioId(id)
+      audio.onended = () => {
+        setPlayingAudioId(null)
       }
-      cooldownRef.current = setTimeout(() => {
-        setAudioCooldown(false)
-      }, cooldownMs)
+    } catch (error) {
+      console.error("Audio playback failed", error)
+    } finally {
+      setAudioLoadingId(null)
     }
   }
 
@@ -319,9 +321,10 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                   Listen to your personalized workout and diet plans with natural voice narration.
                 </p>
                 <Button
-                  disabled={audioCooldown}
+                  disabled={playingAudioId !== null && playingAudioId !== "plan-overview"}
                   onClick={() =>
-                    speakWithCooldown(
+                    handleAudioToggle(
+                      "plan-overview",
                       "plan",
                       `Workouts: ${workoutPlan.map((w) => w.name).join(", ")}. Meals: ${dietPlan
                         .map((m) => m.meal)
@@ -330,7 +333,14 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                   }
                   className="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm"
                 >
-                  Read My Plan
+                  {audioLoadingId === "plan-overview" ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : playingAudioId === "plan-overview" ? (
+                    <Square className="w-4 h-4 mr-2 fill-current" />
+                  ) : (
+                    <Volume2 className="w-4 h-4 mr-2" />
+                  )}
+                  {playingAudioId === "plan-overview" ? "Stop Audio" : "Read My Plan"}
                 </Button>
               </motion.div>
 
@@ -349,11 +359,18 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                   Generate realistic images of exercises and meals to better visualize your fitness journey.
                 </p>
                 <Button
-                  disabled={audioCooldown}
-                  onClick={() => speakWithCooldown("tips", tips.join(". "))}
+                  disabled={playingAudioId !== null && playingAudioId !== "tips"}
+                  onClick={() => handleAudioToggle("tips", "tips", tips.join(". "))}
                   className="w-full bg-cyan-500 hover:bg-cyan-600 text-white text-sm"
                 >
-                  Play Tips Audio
+                  {audioLoadingId === "tips" ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : playingAudioId === "tips" ? (
+                    <Square className="w-4 h-4 mr-2 fill-current" />
+                  ) : (
+                    <Volume2 className="w-4 h-4 mr-2" />
+                  )}
+                  {playingAudioId === "tips" ? "Stop Audio" : "Play Tips Audio"}
                 </Button>
               </motion.div>
             </div>
@@ -412,7 +429,10 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                       }}
                     >
                       {imageLoading === exercise.name ? (
-                        "Generating..."
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Generating...
+                        </>
                       ) : (
                         <>
                           <ImageIcon className="w-4 h-4 mr-2" />
@@ -444,17 +464,24 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
 
                   <div className="flex gap-2">
                     <button
-                      disabled={audioCooldown}
+                      disabled={playingAudioId !== null && playingAudioId !== exercise.name}
                       className="w-full p-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() =>
-                        speakWithCooldown(
+                        handleAudioToggle(
+                          exercise.name,
                           "workout",
                           `${exercise.name}, ${exercise.sets} sets of ${exercise.reps} reps, rest ${exercise.rest}`,
                         )
                       }
                     >
-                      <Volume2 className="w-4 h-4" />
-                      <span className="text-sm font-medium">Audio Cue</span>
+                      {audioLoadingId === exercise.name ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : playingAudioId === exercise.name ? (
+                        <Square className="w-4 h-4 fill-current" />
+                      ) : (
+                        <Volume2 className="w-4 h-4" />
+                      )}
+                      <span className="text-sm font-medium">{playingAudioId === exercise.name ? "Stop Audio" : "Audio Cue"}</span>
                     </button>
                   </div>
                 </div>
@@ -498,7 +525,10 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                       }}
                     >
                       {imageLoading === meal.meal ? (
-                        "Generating..."
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Generating...
+                        </>
                       ) : (
                         <>
                           <ImageIcon className="w-4 h-4 mr-2" />
@@ -537,18 +567,25 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                   </div>
                   <div className="mt-4 flex gap-2">
                     <Button
-                      disabled={audioCooldown}
+                      disabled={playingAudioId !== null && playingAudioId !== meal.meal}
                       variant="outline"
                       className="w-full bg-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() =>
-                        speakWithCooldown(
+                        handleAudioToggle(
+                          meal.meal,
                           "meal",
                           `${meal.meal}: ${meal.items}, ${meal.calories} calories, protein ${meal.protein} grams`,
                         )
                       }
                     >
-                      <Volume2 className="w-4 h-4 mr-2" />
-                      Hear Meal
+                      {audioLoadingId === meal.meal ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : playingAudioId === meal.meal ? (
+                        <Square className="w-4 h-4 mr-2 fill-current" />
+                      ) : (
+                        <Volume2 className="w-4 h-4 mr-2" />
+                      )}
+                      {playingAudioId === meal.meal ? "Stop Audio" : "Hear Meal"}
                     </Button>
                   </div>
                 </div>

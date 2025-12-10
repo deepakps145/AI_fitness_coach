@@ -3853,6 +3853,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$zap$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Zap$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/zap.js [app-ssr] (ecmascript) <export default as Zap>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ImageIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/image.js [app-ssr] (ecmascript) <export default as ImageIcon>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutGrid$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/layout-grid.js [app-ssr] (ecmascript) <export default as LayoutGrid>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/loader-circle.js [app-ssr] (ecmascript) <export default as Loader2>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$square$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Square$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/square.js [app-ssr] (ecmascript) <export default as Square>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$views$2f$profile$2d$settings$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/views/profile-settings-dialog.tsx [app-ssr] (ecmascript)");
 "use client";
 ;
@@ -3861,14 +3863,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$views$2f$profi
 ;
 ;
 ;
-function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpeak, onGenerateImage, onUpdateProfile, onLogout }) {
+function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpeak, onStopAudio, onGenerateImage, onUpdateProfile, onLogout }) {
     const [activeView, setActiveView] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("overview");
     const [imageLoading, setImageLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [localPlan, setLocalPlan] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(plan);
     const [isExporting, setIsExporting] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [audioCooldown, setAudioCooldown] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
-    const cooldownRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
-    const cooldownMs = 3000;
+    const [playingAudioId, setPlayingAudioId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [audioLoadingId, setAudioLoadingId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         setLocalPlan(plan);
     }, [
@@ -3913,25 +3914,26 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
         }
     ];
     const isWorkout = (item)=>item.sets !== undefined;
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        return ()=>{
-            if (cooldownRef.current) {
-                clearTimeout(cooldownRef.current);
-            }
-        };
-    }, []);
-    const speakWithCooldown = async (section, text)=>{
-        if (audioCooldown) return;
-        setAudioCooldown(true);
+    const handleAudioToggle = async (id, section, text)=>{
+        if (playingAudioId === id) {
+            onStopAudio();
+            setPlayingAudioId(null);
+            return;
+        }
+        if (playingAudioId !== null || audioLoadingId !== null) {
+            return;
+        }
+        setAudioLoadingId(id);
         try {
-            await onSpeak(section, text);
+            const audio = await onSpeak(section, text);
+            setPlayingAudioId(id);
+            audio.onended = ()=>{
+                setPlayingAudioId(null);
+            };
+        } catch (error) {
+            console.error("Audio playback failed", error);
         } finally{
-            if (cooldownRef.current) {
-                clearTimeout(cooldownRef.current);
-            }
-            cooldownRef.current = setTimeout(()=>{
-                setAudioCooldown(false);
-            }, cooldownMs);
+            setAudioLoadingId(null);
         }
     };
     const handleExportPdf = async ()=>{
@@ -4073,7 +4075,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 201,
+                                        lineNumber: 203,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4081,18 +4083,18 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                         children: "Your personalized fitness plan awaits"
                                     }, void 0, false, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 202,
+                                        lineNumber: 204,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 200,
+                                lineNumber: 202,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/components/views/dashboard-page.tsx",
-                            lineNumber: 199,
+                            lineNumber: 201,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4110,7 +4112,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                     className: "w-3.5 h-3.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                                    lineNumber: 210,
+                                                    lineNumber: 212,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4118,13 +4120,13 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                     children: "Regenerate"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                                    lineNumber: 211,
+                                                    lineNumber: 213,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/views/dashboard-page.tsx",
-                                            lineNumber: 209,
+                                            lineNumber: 211,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -4137,7 +4139,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                     className: "w-3.5 h-3.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                                    lineNumber: 219,
+                                                    lineNumber: 221,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4145,19 +4147,19 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                     children: isExporting ? "Exporting..." : "Export PDF"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                                    lineNumber: 220,
+                                                    lineNumber: 222,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/views/dashboard-page.tsx",
-                                            lineNumber: 213,
+                                            lineNumber: 215,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                    lineNumber: 208,
+                                    lineNumber: 210,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$views$2f$profile$2d$settings$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ProfileSettingsDialog"], {
@@ -4166,24 +4168,24 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                     onLogout: onLogout
                                 }, void 0, false, {
                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                    lineNumber: 223,
+                                    lineNumber: 225,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/views/dashboard-page.tsx",
-                            lineNumber: 207,
+                            lineNumber: 209,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/views/dashboard-page.tsx",
-                    lineNumber: 198,
+                    lineNumber: 200,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/views/dashboard-page.tsx",
-                lineNumber: 192,
+                lineNumber: 194,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -4207,7 +4209,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                 className: "absolute top-0 right-0 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl"
                             }, void 0, false, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 236,
+                                lineNumber: 238,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4218,7 +4220,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                         children: motivation
                                     }, void 0, false, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 238,
+                                        lineNumber: 240,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4226,19 +4228,19 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                         children: "Today's motivation"
                                     }, void 0, false, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 239,
+                                        lineNumber: 241,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 237,
+                                lineNumber: 239,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/views/dashboard-page.tsx",
-                        lineNumber: 230,
+                        lineNumber: 232,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4252,14 +4254,14 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                         className: "w-4 h-4 mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 248,
+                                        lineNumber: 250,
                                         columnNumber: 13
                                     }, this),
                                     "Overview"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 244,
+                                lineNumber: 246,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -4268,7 +4270,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                 children: "Workout"
                             }, void 0, false, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 251,
+                                lineNumber: 253,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -4277,13 +4279,13 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                 children: "Diet"
                             }, void 0, false, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 257,
+                                lineNumber: 259,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/views/dashboard-page.tsx",
-                        lineNumber: 243,
+                        lineNumber: 245,
                         columnNumber: 9
                     }, this),
                     activeView === "overview" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -4319,7 +4321,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: stat.label
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 278,
+                                                lineNumber: 280,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4331,7 +4333,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                         children: stat.value
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                        lineNumber: 280,
+                                                        lineNumber: 282,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4339,24 +4341,24 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                         children: stat.unit
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                        lineNumber: 281,
+                                                        lineNumber: 283,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 279,
+                                                lineNumber: 281,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, stat.label, true, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 271,
+                                        lineNumber: 273,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 269,
+                                lineNumber: 271,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4382,12 +4384,12 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                     className: "w-6 h-6 text-cyan-400"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                                    lineNumber: 296,
+                                                    lineNumber: 298,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 295,
+                                                lineNumber: 297,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -4395,7 +4397,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: "AI Plan Generation"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 298,
+                                                lineNumber: 300,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4403,7 +4405,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: "Personalized workout and diet plans generated by Gemini from your goals and constraints."
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 299,
+                                                lineNumber: 301,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -4412,13 +4414,13 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: "Generate New Plan"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 302,
+                                                lineNumber: 304,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 289,
+                                        lineNumber: 291,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -4441,12 +4443,12 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                     className: "w-6 h-6 text-blue-400"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                                    lineNumber: 315,
+                                                    lineNumber: 317,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 314,
+                                                lineNumber: 316,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -4454,7 +4456,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: "Voice Reading"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 317,
+                                                lineNumber: 319,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4462,23 +4464,44 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: "Listen to your personalized workout and diet plans with natural voice narration."
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 318,
+                                                lineNumber: 320,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                                disabled: audioCooldown,
-                                                onClick: ()=>speakWithCooldown("plan", `Workouts: ${workoutPlan.map((w)=>w.name).join(", ")}. Meals: ${dietPlan.map((m)=>m.meal).join(", ")}. Tips: ${tips.join("; ")}`),
+                                                disabled: playingAudioId !== null && playingAudioId !== "plan-overview",
+                                                onClick: ()=>handleAudioToggle("plan-overview", "plan", `Workouts: ${workoutPlan.map((w)=>w.name).join(", ")}. Meals: ${dietPlan.map((m)=>m.meal).join(", ")}. Tips: ${tips.join("; ")}`),
                                                 className: "w-full bg-blue-500 hover:bg-blue-600 text-white text-sm",
-                                                children: "Read My Plan"
-                                            }, void 0, false, {
+                                                children: [
+                                                    audioLoadingId === "plan-overview" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
+                                                        className: "w-4 h-4 mr-2 animate-spin"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/views/dashboard-page.tsx",
+                                                        lineNumber: 337,
+                                                        columnNumber: 21
+                                                    }, this) : playingAudioId === "plan-overview" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$square$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Square$3e$__["Square"], {
+                                                        className: "w-4 h-4 mr-2 fill-current"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/views/dashboard-page.tsx",
+                                                        lineNumber: 339,
+                                                        columnNumber: 21
+                                                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$volume$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Volume2$3e$__["Volume2"], {
+                                                        className: "w-4 h-4 mr-2"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/views/dashboard-page.tsx",
+                                                        lineNumber: 341,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    playingAudioId === "plan-overview" ? "Stop Audio" : "Read My Plan"
+                                                ]
+                                            }, void 0, true, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 321,
+                                                lineNumber: 323,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 308,
+                                        lineNumber: 310,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -4501,12 +4524,12 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                     className: "w-6 h-6 text-cyan-400"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                                    lineNumber: 345,
+                                                    lineNumber: 355,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 344,
+                                                lineNumber: 354,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -4514,7 +4537,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: "AI Image Generation"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 347,
+                                                lineNumber: 357,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4522,29 +4545,50 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: "Generate realistic images of exercises and meals to better visualize your fitness journey."
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 348,
+                                                lineNumber: 358,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                                disabled: audioCooldown,
-                                                onClick: ()=>speakWithCooldown("tips", tips.join(". ")),
+                                                disabled: playingAudioId !== null && playingAudioId !== "tips",
+                                                onClick: ()=>handleAudioToggle("tips", "tips", tips.join(". ")),
                                                 className: "w-full bg-cyan-500 hover:bg-cyan-600 text-white text-sm",
-                                                children: "Play Tips Audio"
-                                            }, void 0, false, {
+                                                children: [
+                                                    audioLoadingId === "tips" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
+                                                        className: "w-4 h-4 mr-2 animate-spin"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/views/dashboard-page.tsx",
+                                                        lineNumber: 367,
+                                                        columnNumber: 21
+                                                    }, this) : playingAudioId === "tips" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$square$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Square$3e$__["Square"], {
+                                                        className: "w-4 h-4 mr-2 fill-current"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/views/dashboard-page.tsx",
+                                                        lineNumber: 369,
+                                                        columnNumber: 21
+                                                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$volume$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Volume2$3e$__["Volume2"], {
+                                                        className: "w-4 h-4 mr-2"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/views/dashboard-page.tsx",
+                                                        lineNumber: 371,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    playingAudioId === "tips" ? "Stop Audio" : "Play Tips Audio"
+                                                ]
+                                            }, void 0, true, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 351,
+                                                lineNumber: 361,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 338,
+                                        lineNumber: 348,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 288,
+                                lineNumber: 290,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -4566,7 +4610,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                         children: "AI Tips"
                                     }, void 0, false, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 368,
+                                        lineNumber: 385,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -4576,24 +4620,24 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: tip
                                             }, tip, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 371,
+                                                lineNumber: 388,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 369,
+                                        lineNumber: 386,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 362,
+                                lineNumber: 379,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/views/dashboard-page.tsx",
-                        lineNumber: 267,
+                        lineNumber: 269,
                         columnNumber: 11
                     }, this),
                     activeView === "workout" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -4632,7 +4676,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                             className: "w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                         }, void 0, false, {
                                             fileName: "[project]/components/views/dashboard-page.tsx",
-                                            lineNumber: 400,
+                                            lineNumber: 417,
                                             columnNumber: 21
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                             variant: "ghost",
@@ -4641,13 +4685,24 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 e.stopPropagation();
                                                 await handleImage(exercise);
                                             },
-                                            children: imageLoading === exercise.name ? "Generating..." : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                                            children: imageLoading === exercise.name ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
+                                                        className: "w-4 h-4 mr-2 animate-spin"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/views/dashboard-page.tsx",
+                                                        lineNumber: 433,
+                                                        columnNumber: 27
+                                                    }, this),
+                                                    "Generating..."
+                                                ]
+                                            }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ImageIcon$3e$__["ImageIcon"], {
                                                         className: "w-4 h-4 mr-2"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                        lineNumber: 418,
+                                                        lineNumber: 438,
                                                         columnNumber: 27
                                                     }, this),
                                                     "Generate Image"
@@ -4655,12 +4710,12 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                             }, void 0, true)
                                         }, void 0, false, {
                                             fileName: "[project]/components/views/dashboard-page.tsx",
-                                            lineNumber: 406,
+                                            lineNumber: 423,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 398,
+                                        lineNumber: 415,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4671,7 +4726,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: exercise.name
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 428,
+                                                lineNumber: 448,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4685,7 +4740,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                 children: "Sets"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 432,
+                                                                lineNumber: 452,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4693,13 +4748,13 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                 children: exercise.sets
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 433,
+                                                                lineNumber: 453,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                        lineNumber: 431,
+                                                        lineNumber: 451,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4710,7 +4765,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                 children: "Reps"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 436,
+                                                                lineNumber: 456,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4718,13 +4773,13 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                 children: exercise.reps
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 437,
+                                                                lineNumber: 457,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                        lineNumber: 435,
+                                                        lineNumber: 455,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4735,7 +4790,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                 children: "Rest"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 440,
+                                                                lineNumber: 460,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4743,69 +4798,81 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                 children: exercise.rest
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 441,
+                                                                lineNumber: 461,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                        lineNumber: 439,
+                                                        lineNumber: 459,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 430,
+                                                lineNumber: 450,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "flex gap-2",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                    disabled: audioCooldown,
+                                                    disabled: playingAudioId !== null && playingAudioId !== exercise.name,
                                                     className: "w-full p-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed",
-                                                    onClick: ()=>speakWithCooldown("workout", `${exercise.name}, ${exercise.sets} sets of ${exercise.reps} reps, rest ${exercise.rest}`),
+                                                    onClick: ()=>handleAudioToggle(exercise.name, "workout", `${exercise.name}, ${exercise.sets} sets of ${exercise.reps} reps, rest ${exercise.rest}`),
                                                     children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$volume$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Volume2$3e$__["Volume2"], {
+                                                        audioLoadingId === exercise.name ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
+                                                            className: "w-4 h-4 animate-spin"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/components/views/dashboard-page.tsx",
+                                                            lineNumber: 478,
+                                                            columnNumber: 25
+                                                        }, this) : playingAudioId === exercise.name ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$square$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Square$3e$__["Square"], {
+                                                            className: "w-4 h-4 fill-current"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/components/views/dashboard-page.tsx",
+                                                            lineNumber: 480,
+                                                            columnNumber: 25
+                                                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$volume$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Volume2$3e$__["Volume2"], {
                                                             className: "w-4 h-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/views/dashboard-page.tsx",
-                                                            lineNumber: 456,
-                                                            columnNumber: 23
+                                                            lineNumber: 482,
+                                                            columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-sm font-medium",
-                                                            children: "Audio Cue"
+                                                            children: playingAudioId === exercise.name ? "Stop Audio" : "Audio Cue"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/views/dashboard-page.tsx",
-                                                            lineNumber: 457,
+                                                            lineNumber: 484,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                                    lineNumber: 446,
+                                                    lineNumber: 466,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 445,
+                                                lineNumber: 465,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 427,
+                                        lineNumber: 447,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, exercise.name, true, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 389,
+                                lineNumber: 406,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/components/views/dashboard-page.tsx",
-                        lineNumber: 382,
+                        lineNumber: 399,
                         columnNumber: 11
                     }, this),
                     activeView === "diet" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -4844,7 +4911,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                             className: "w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                         }, void 0, false, {
                                             fileName: "[project]/components/views/dashboard-page.tsx",
-                                            lineNumber: 486,
+                                            lineNumber: 513,
                                             columnNumber: 21
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                             variant: "ghost",
@@ -4853,13 +4920,24 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 e.stopPropagation();
                                                 await handleImage(meal);
                                             },
-                                            children: imageLoading === meal.meal ? "Generating..." : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                                            children: imageLoading === meal.meal ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
+                                                        className: "w-4 h-4 mr-2 animate-spin"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/components/views/dashboard-page.tsx",
+                                                        lineNumber: 529,
+                                                        columnNumber: 27
+                                                    }, this),
+                                                    "Generating..."
+                                                ]
+                                            }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ImageIcon$3e$__["ImageIcon"], {
                                                         className: "w-4 h-4 mr-2"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                        lineNumber: 504,
+                                                        lineNumber: 534,
                                                         columnNumber: 27
                                                     }, this),
                                                     "Generate Image"
@@ -4867,12 +4945,12 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                             }, void 0, true)
                                         }, void 0, false, {
                                             fileName: "[project]/components/views/dashboard-page.tsx",
-                                            lineNumber: 492,
+                                            lineNumber: 519,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 484,
+                                        lineNumber: 511,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4883,7 +4961,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: meal.meal
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 514,
+                                                lineNumber: 544,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4891,7 +4969,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                 children: meal.items
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 515,
+                                                lineNumber: 545,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4905,7 +4983,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                 children: "Calories:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 519,
+                                                                lineNumber: 549,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4913,13 +4991,13 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                 children: meal.calories
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 520,
+                                                                lineNumber: 550,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                        lineNumber: 518,
+                                                        lineNumber: 548,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4932,7 +5010,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                         children: "Protein"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                        lineNumber: 525,
+                                                                        lineNumber: 555,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4943,13 +5021,13 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                        lineNumber: 526,
+                                                                        lineNumber: 556,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 524,
+                                                                lineNumber: 554,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4959,7 +5037,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                         children: "Carbs"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                        lineNumber: 529,
+                                                                        lineNumber: 559,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4970,13 +5048,13 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                        lineNumber: 530,
+                                                                        lineNumber: 560,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 528,
+                                                                lineNumber: 558,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4986,7 +5064,7 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                         children: "Fats"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                        lineNumber: 533,
+                                                                        lineNumber: 563,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4997,81 +5075,93 @@ function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpe
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                        lineNumber: 534,
+                                                                        lineNumber: 564,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                                lineNumber: 532,
+                                                                lineNumber: 562,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                                        lineNumber: 523,
+                                                        lineNumber: 553,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 517,
+                                                lineNumber: 547,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "mt-4 flex gap-2",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                                    disabled: audioCooldown,
+                                                    disabled: playingAudioId !== null && playingAudioId !== meal.meal,
                                                     variant: "outline",
                                                     className: "w-full bg-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed",
-                                                    onClick: ()=>speakWithCooldown("meal", `${meal.meal}: ${meal.items}, ${meal.calories} calories, protein ${meal.protein} grams`),
+                                                    onClick: ()=>handleAudioToggle(meal.meal, "meal", `${meal.meal}: ${meal.items}, ${meal.calories} calories, protein ${meal.protein} grams`),
                                                     children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$volume$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Volume2$3e$__["Volume2"], {
+                                                        audioLoadingId === meal.meal ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
+                                                            className: "w-4 h-4 mr-2 animate-spin"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/components/views/dashboard-page.tsx",
+                                                            lineNumber: 582,
+                                                            columnNumber: 25
+                                                        }, this) : playingAudioId === meal.meal ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$square$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Square$3e$__["Square"], {
+                                                            className: "w-4 h-4 mr-2 fill-current"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/components/views/dashboard-page.tsx",
+                                                            lineNumber: 584,
+                                                            columnNumber: 25
+                                                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$volume$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Volume2$3e$__["Volume2"], {
                                                             className: "w-4 h-4 mr-2"
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/views/dashboard-page.tsx",
-                                                            lineNumber: 550,
-                                                            columnNumber: 23
+                                                            lineNumber: 586,
+                                                            columnNumber: 25
                                                         }, this),
-                                                        "Hear Meal"
+                                                        playingAudioId === meal.meal ? "Stop Audio" : "Hear Meal"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/components/views/dashboard-page.tsx",
-                                                    lineNumber: 539,
+                                                    lineNumber: 569,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                                lineNumber: 538,
+                                                lineNumber: 568,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/dashboard-page.tsx",
-                                        lineNumber: 513,
+                                        lineNumber: 543,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, meal.meal, true, {
                                 fileName: "[project]/components/views/dashboard-page.tsx",
-                                lineNumber: 475,
+                                lineNumber: 502,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/components/views/dashboard-page.tsx",
-                        lineNumber: 468,
+                        lineNumber: 495,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/views/dashboard-page.tsx",
-                lineNumber: 228,
+                lineNumber: 230,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/views/dashboard-page.tsx",
-        lineNumber: 184,
+        lineNumber: 186,
         columnNumber: 5
     }, this);
 }
@@ -5362,6 +5452,13 @@ function AppWrapper() {
             }
         };
         audio.play();
+        return audio;
+    };
+    const handleStopAudio = ()=>{
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current = null;
+        }
     };
     const handleGenerateImage = async (prompt)=>{
         const url = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$ai$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["generateImage"])(prompt);
@@ -5400,7 +5497,7 @@ function AppWrapper() {
                     onNavigateToSignUp: ()=>setCurrentView("signup")
                 }, "signin", false, {
                     fileName: "[project]/components/app-wrapper.tsx",
-                    lineNumber: 204,
+                    lineNumber: 212,
                     columnNumber: 11
                 }, this),
                 currentView === "signup" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$views$2f$signup$2d$page$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SignUpPage"], {
@@ -5408,7 +5505,7 @@ function AppWrapper() {
                     onNavigateToSignIn: ()=>setCurrentView("signin")
                 }, "signup", false, {
                     fileName: "[project]/components/app-wrapper.tsx",
-                    lineNumber: 211,
+                    lineNumber: 219,
                     columnNumber: 11
                 }, this),
                 currentView === "onboarding" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$views$2f$onboarding$2d$page$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["OnboardingPage"], {
@@ -5419,14 +5516,14 @@ function AppWrapper() {
                     error: error
                 }, "onboarding", false, {
                     fileName: "[project]/components/app-wrapper.tsx",
-                    lineNumber: 218,
+                    lineNumber: 226,
                     columnNumber: 11
                 }, this),
                 currentView === "loading" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$views$2f$loading$2d$page$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["LoadingPage"], {
                     isGenerating: isGenerating
                 }, "loading", false, {
                     fileName: "[project]/components/app-wrapper.tsx",
-                    lineNumber: 227,
+                    lineNumber: 235,
                     columnNumber: 39
                 }, this),
                 currentView === "dashboard" && plan && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$views$2f$dashboard$2d$page$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DashboardPage"], {
@@ -5436,23 +5533,24 @@ function AppWrapper() {
                     toggleTheme: toggleTheme,
                     onRegenerate: ()=>handleGeneratePlan(userData),
                     onSpeak: handleSpeak,
+                    onStopAudio: handleStopAudio,
                     onGenerateImage: handleGenerateImage,
                     onUpdateProfile: handleUpdateProfile,
                     onLogout: handleLogout
                 }, "dashboard", false, {
                     fileName: "[project]/components/app-wrapper.tsx",
-                    lineNumber: 229,
+                    lineNumber: 237,
                     columnNumber: 11
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/components/app-wrapper.tsx",
-            lineNumber: 202,
+            lineNumber: 210,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/components/app-wrapper.tsx",
-        lineNumber: 201,
+        lineNumber: 209,
         columnNumber: 5
     }, this);
 }
