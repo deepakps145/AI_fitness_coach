@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { AnimatePresence } from "framer-motion"
 import { SignInPage } from "./views/signin-page"
@@ -41,6 +41,7 @@ export function AppWrapper() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hasFetchedRemote, setHasFetchedRemote] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -159,8 +160,18 @@ export function AppWrapper() {
   }
 
   const handleSpeak = async (section: string, text: string) => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current = null
+    }
     const audioBase64 = await speakText(section, text)
     const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`)
+    audioRef.current = audio
+    audio.onended = () => {
+      if (audioRef.current === audio) {
+        audioRef.current = null
+      }
+    }
     audio.play()
   }
 

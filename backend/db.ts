@@ -161,6 +161,11 @@ export async function updateUserPassword(email: string, passwordHash: string): P
   )
 }
 
+export async function deleteUserAccount(email: string): Promise<void> {
+  await initPromise
+  await pool.query(`delete from ${USER_TABLE} where email = $1`, [email])
+}
+
 export async function upsertUserAccount(account: UserAccount): Promise<UserAccount> {
   await initPromise
   const { email, password_hash, ...profile } = account

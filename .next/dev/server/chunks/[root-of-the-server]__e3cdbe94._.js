@@ -63,6 +63,8 @@ __turbopack_async_result__();
 return __turbopack_context__.a(async (__turbopack_handle_async_dependencies__, __turbopack_async_result__) => { try {
 
 __turbopack_context__.s([
+    "deleteUserAccount",
+    ()=>deleteUserAccount,
     "fetchPlanByEmail",
     ()=>fetchPlanByEmail,
     "fetchUserAccount",
@@ -214,6 +216,12 @@ async function updateUserPassword(email, passwordHash) {
     await pool.query(`update ${USER_TABLE} set password_hash = $2, updated_at = now() where email = $1`, [
         email,
         passwordHash
+    ]);
+}
+async function deleteUserAccount(email) {
+    await initPromise;
+    await pool.query(`delete from ${USER_TABLE} where email = $1`, [
+        email
     ]);
 }
 async function upsertUserAccount(account) {

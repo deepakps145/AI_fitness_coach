@@ -1,3 +1,4 @@
+````markdown
 # AI Fitness Coach
 
 A powerful Next.js web application that generates personalized AI-driven fitness plans with integrated voice coaching, meal planning, exercise visualization, and data persistence. Built with Framer Motion animations, ElevenLabs TTS, Google Gemini AI, and Neon PostgreSQL.

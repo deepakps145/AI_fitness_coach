@@ -9,8 +9,18 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { UserData } from "@/components/app-wrapper"
-import { Settings, Loader2, LogOut, Eye, EyeOff } from "lucide-react"
+import { Settings, Loader2, LogOut, Eye, EyeOff, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 interface ProfileSettingsDialogProps {
   userData: UserData
@@ -45,6 +55,10 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
     newPassword: false,
     confirmPassword: false,
   })
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [deletePassword, setDeletePassword] = useState("")
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showDeletePassword, setShowDeletePassword] = useState(false)
 
   const handleChange = (field: keyof UserData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -114,7 +128,46 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
     }
   }
 
+  const handleDeleteAccount = async () => {
+    if (!deletePassword) return
+
+    setIsDeleting(true)
+    try {
+      const res = await fetch("/api/user/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userData.email,
+          password: deletePassword,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to delete account")
+      }
+
+      toast({
+        title: "Account deleted",
+        description: "Your account has been successfully deleted.",
+      })
+      onLogout()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: (error as Error).message,
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeleting(false)
+      setDeleteDialogOpen(false)
+      setDeletePassword("")
+    }
+  }
+
   return (
+    <>
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
@@ -127,7 +180,7 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
           <DialogTitle>Edit Profile</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email (Read-only)</Label>
               <Input id="email" value={userData.email} disabled />
@@ -263,7 +316,7 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
           <div className="border-t pt-4 mt-4">
             <h3 className="text-lg font-medium mb-4">Change Password</h3>
             <div className="grid grid-cols-1 gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">New Password</Label>
                   <div className="relative">
@@ -319,16 +372,22 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
             </div>
           </div>
 
-          <div className="flex justify-between items-center mt-4">
-            <Button type="button" variant="destructive" onClick={onLogout} className="gap-2">
-              <LogOut className="w-4 h-4" />
-              Logout
-            </Button>
-            <div className="flex gap-2">
-              <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
+          <div className="flex flex-col-reverse gap-4 mt-6 md:flex-row md:justify-between md:items-center">
+            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+              <Button type="button" variant="outline" onClick={onLogout} className="gap-2 w-full sm:w-auto">
+                <LogOut className="w-4 h-4" />
+                Logout
+              </Button>
+              <Button type="button" variant="destructive" onClick={() => setDeleteDialogOpen(true)} className="gap-2 w-full sm:w-auto">
+                <Trash2 className="w-4 h-4" />
+                Delete Account
+              </Button>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto justify-end">
+              <Button type="button" variant="ghost" onClick={() => setOpen(false)} className="w-full sm:w-auto">
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
                 {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 Save Changes
               </Button>
@@ -337,5 +396,48 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
         </form>
       </DialogContent>
     </Dialog>
+
+    <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+            Please enter your password to confirm.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="py-4">
+          <Label htmlFor="deletePassword">Password</Label>
+          <div className="relative mt-2">
+            <Input
+              id="deletePassword"
+              type={showDeletePassword ? "text" : "password"}
+              value={deletePassword}
+              onChange={(e) => setDeletePassword(e.target.value)}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+              onClick={() => setShowDeletePassword(!showDeletePassword)}
+            >
+              {showDeletePassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </Button>
+          </div>
+        </div>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => {
+            setDeleteDialogOpen(false)
+            setDeletePassword("")
+          }}>Cancel</AlertDialogCancel>
+          <Button variant="destructive" onClick={handleDeleteAccount} disabled={isDeleting || !deletePassword}>
+            {isDeleting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            Delete Account
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   )
 }

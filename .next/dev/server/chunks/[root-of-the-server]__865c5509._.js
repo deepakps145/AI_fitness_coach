@@ -35,6 +35,12 @@ const mod = __turbopack_context__.x("next/dist/shared/lib/no-fallback-error.exte
 
 module.exports = mod;
 }),
+"[externals]/crypto [external] (crypto, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("crypto", () => require("crypto"));
+
+module.exports = mod;
+}),
 "[externals]/next/dist/server/app-render/after-task-async-storage.external.js [external] (next/dist/server/app-render/after-task-async-storage.external.js, cjs)", ((__turbopack_context__, module, exports) => {
 
 const mod = __turbopack_context__.x("next/dist/server/app-render/after-task-async-storage.external.js", () => require("next/dist/server/app-render/after-task-async-storage.external.js"));
@@ -295,17 +301,16 @@ async function updateUserProfile(email, profile) {
 }
 __turbopack_async_result__();
 } catch(e) { __turbopack_async_result__(e); } }, false);}),
-"[project]/app/api/plan/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
+"[project]/app/api/user/delete/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
 return __turbopack_context__.a(async (__turbopack_handle_async_dependencies__, __turbopack_async_result__) => { try {
 
 __turbopack_context__.s([
-    "GET",
-    ()=>GET,
     "POST",
     ()=>POST
 ]);
+var __TURBOPACK__imported__module__$5b$externals$5d2f$crypto__$5b$external$5d$__$28$crypto$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/crypto [external] (crypto, cjs)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/server.js [app-route] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/backend/db.ts [app-route] (ecmascript)");
 var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
@@ -314,51 +319,48 @@ var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
 [__TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
 ;
 ;
-async function GET(req) {
-    try {
-        const { searchParams } = new URL(req.url);
-        const email = searchParams.get("email");
-        if (!email) {
-            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-                error: "Missing email"
-            }, {
-                status: 400
-            });
-        }
-        const record = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["fetchPlanByEmail"])(email);
-        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            record
-        });
-    } catch (error) {
-        const message = error.message;
-        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            error: message
-        }, {
-            status: 500
-        });
-    }
+;
+function hashPassword(password) {
+    return (0, __TURBOPACK__imported__module__$5b$externals$5d2f$crypto__$5b$external$5d$__$28$crypto$2c$__cjs$29$__["createHash"])("sha256").update(password).digest("hex");
 }
 async function POST(req) {
     try {
-        const { email, userData, plan } = await req.json();
-        if (!email || !plan) {
+        const body = await req.json();
+        const { email, password } = body;
+        if (!email || !password) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-                error: "Missing email or plan"
+                error: "Missing email or password"
             }, {
                 status: 400
             });
         }
-        const record = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["upsertPlanRecord"])(email, userData, plan);
-        if (userData && Object.keys(userData).length > 0) {
-            await (0, __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["updateUserProfile"])(email, userData);
+        // 1. Fetch user to verify password
+        const user = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["fetchUserAccount"])(email);
+        if (!user) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "User not found"
+            }, {
+                status: 404
+            });
         }
+        // 2. Verify password
+        const passwordHash = hashPassword(password);
+        if (user.password_hash !== passwordHash) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "Incorrect password"
+            }, {
+                status: 401
+            });
+        }
+        // 3. Delete user
+        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["deleteUserAccount"])(email);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            record
+            success: true
         });
     } catch (error) {
-        const message = error.message;
+        console.error("Error deleting user:", error);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
-            error: message
+            error: "Failed to delete user"
         }, {
             status: 500
         });
@@ -368,4 +370,4 @@ __turbopack_async_result__();
 } catch(e) { __turbopack_async_result__(e); } }, false);}),
 ];
 
-//# sourceMappingURL=%5Broot-of-the-server%5D__cafc34ce._.js.map
+//# sourceMappingURL=%5Broot-of-the-server%5D__865c5509._.js.map

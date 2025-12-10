@@ -1,11 +1,9 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/generate-image/route": "app/api/generate-image/route.js",
   "/api/generate-plan/route": "app/api/generate-plan/route.js",
   "/api/generate-tips/route": "app/api/generate-tips/route.js",
   "/api/plan/route": "app/api/plan/route.js",
-  "/api/speak/route": "app/api/speak/route.js",
-  "/api/user/change-password/route": "app/api/user/change-password/route.js",
+  "/api/user/delete/route": "app/api/user/delete/route.js",
   "/api/user/route": "app/api/user/route.js",
   "/coach/page": "app/coach/page.js",
   "/page": "app/page.js"

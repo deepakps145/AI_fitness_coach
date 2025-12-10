@@ -195,25 +195,31 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
         transition={{ delay: 0.2, duration: 0.5 }}
         className="sticky top-0 z-40 backdrop-blur-xl bg-white/10 border-b border-white/20"
       >
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between md:py-4 md:gap-4">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-cyan-400 break-words">Welcome, {userData.name}</h1>
-            <p className="text-xs md:text-sm text-muted-foreground mt-1">Your personalized fitness plan awaits</p>
+        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:py-4 md:gap-4">
+          <div className="flex items-center justify-between md:block">
+            <div>
+              <h1 className="text-xl md:text-3xl font-bold text-cyan-400 break-words">Welcome, {userData.name}</h1>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">Your personalized fitness plan awaits</p>
+            </div>
+            {/* Mobile-only profile trigger could go here if we wanted a different layout, but keeping it simple for now */}
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 justify-end">
-            <Button onClick={onRegenerate} className="flex items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white">
-              <Zap className="w-4 h-4" />
-              Regenerate
-            </Button>
-            <Button
-              onClick={handleExportPdf}
-              disabled={isExporting}
-              className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-70"
-            >
-              <Download className="w-4 h-4" />
-              {isExporting ? "Exporting..." : "Export PDF"}
-            </Button>
+          <div className="flex items-center gap-2 justify-between md:justify-end overflow-x-auto pb-1 md:pb-0 no-scrollbar">
+            <div className="flex gap-2">
+              <Button onClick={onRegenerate} size="sm" className="flex items-center gap-1.5 bg-cyan-500 hover:bg-cyan-600 text-white h-9 px-3">
+                <Zap className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Regenerate</span>
+              </Button>
+              <Button
+                onClick={handleExportPdf}
+                disabled={isExporting}
+                size="sm"
+                className="flex items-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white disabled:opacity-70 h-9 px-3"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{isExporting ? "Exporting..." : "Export PDF"}</span>
+              </Button>
+            </div>
             <ProfileSettingsDialog userData={userData} onUpdate={onUpdateProfile} onLogout={onLogout} />
           </div>
         </div>
@@ -260,18 +266,18 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
         {activeView === "overview" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {overviewStats.map((stat, i) => (
                 <motion.div
                   key={stat.label}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: i * 0.1 }}
-                  className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6"
+                  className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl md:rounded-2xl p-3 md:p-4"
                 >
-                  <p className="text-sm text-muted-foreground mb-2">{stat.label}</p>
-                  <div className="flex items-baseline gap-2">
-                    <p className="text-4xl font-bold text-cyan-400">{stat.value}</p>
+                  <p className="text-[10px] md:text-xs text-muted-foreground mb-0.5 md:mb-1">{stat.label}</p>
+                  <div className="flex items-baseline gap-1 md:gap-2">
+                    <p className="text-base md:text-2xl font-bold text-cyan-400 truncate flex-1 min-w-0" title={String(stat.value)}>{stat.value}</p>
                     <p className="text-sm text-muted-foreground">{stat.unit}</p>
                   </div>
                 </motion.div>
