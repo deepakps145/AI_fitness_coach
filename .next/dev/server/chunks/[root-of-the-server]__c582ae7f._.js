@@ -64,7 +64,9 @@ const DEFAULT_MOTIVATION = "Your plan is ready. Stay consistent and you'll see r
 function buildPrompt(body) {
     const lines = [
         "You are an expert fitness coach and dietitian.",
-        "Respond ONLY with JSON. Do not include code fences or prose.",
+        "Respond ONLY with valid JSON. Do not include code fences, markdown, or prose.",
+        "Ensure all keys and string values are enclosed in double quotes.",
+        "Do not use trailing commas.",
         "Fields: workouts (array of {name, sets, reps, rest, focus, imagePrompt}), meals (array of {meal, items, calories, protein, carbs, fats, imagePrompt}), tips (array of strings), motivation (single string).",
         "Keep workouts 4-6 items, meals 4 items (breakfast, lunch, snack, dinner).",
         "Tailor to the user's goals, level, location, dietary preferences, and medical notes.",
@@ -92,9 +94,22 @@ const extractJson = (text)=>{
     return null;
 };
 const repairJson = (text)=>{
-    let cleaned = text.replace(/```/g, "").replace(/json\s*/gi, "").trim();
-    cleaned = cleaned.replace(/'([^']*)'/g, '"$1"');
-    cleaned = cleaned.replace(/([,{]\s*)([A-Za-z0-9_]+)(\s*):/g, '$1"$2"$3:');
+    // 1. Remove markdown code blocks
+    let cleaned = text.replace(/```json/gi, "").replace(/```/g, "").trim();
+    // 2. Attempt to fix common JSON syntax errors
+    // Replace single quotes with double quotes for keys/values, but be careful about apostrophes in text
+    // This is hard to do perfectly with regex. 
+    // Instead, let's focus on the structure.
+    // If the model returns "key": "value" "key2": "value" (missing comma)
+    // We can try to insert commas between value and key.
+    // Look for " (end of string) followed by whitespace/newlines then " (start of key)
+    cleaned = cleaned.replace(/"\s+(?=")/g, '", ');
+    // If the model returns number followed by key without comma: 123 "key"
+    cleaned = cleaned.replace(/(\d+)\s+(?=")/g, '$1, ');
+    // If the model returns boolean followed by key without comma: true "key"
+    cleaned = cleaned.replace(/(true|false)\s+(?=")/g, '$1, ');
+    // Remove trailing commas before closing braces/brackets
+    cleaned = cleaned.replace(/,\s*([\]}])/g, '$1');
     return cleaned;
 };
 async function requestGemini(prompt) {

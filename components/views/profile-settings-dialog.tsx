@@ -59,6 +59,7 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
   const [deletePassword, setDeletePassword] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeletePassword, setShowDeletePassword] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const handleChange = (field: keyof UserData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -132,6 +133,7 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
     if (!deletePassword) return
 
     setIsDeleting(true)
+    setDeleteError(null)
     try {
       const res = await fetch("/api/user/delete", {
         method: "POST",
@@ -154,6 +156,8 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
       })
       onLogout()
     } catch (error) {
+      setDeleteError((error as Error).message)
+      // Also show toast for good measure, or maybe not if we show inline
       toast({
         title: "Error",
         description: (error as Error).message,
@@ -161,8 +165,9 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
       })
     } finally {
       setIsDeleting(false)
-      setDeleteDialogOpen(false)
-      setDeletePassword("")
+      // Do not close dialog if error
+      // setDeleteDialogOpen(false) 
+      // setDeletePassword("")
     }
   }
 
@@ -425,11 +430,15 @@ export function ProfileSettingsDialog({ userData, onUpdate, onLogout }: ProfileS
               {showDeletePassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </Button>
           </div>
+          {deleteError && (
+            <p className="text-sm text-red-500 mt-2">{deleteError}</p>
+          )}
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => {
             setDeleteDialogOpen(false)
             setDeletePassword("")
+            setDeleteError(null)
           }}>Cancel</AlertDialogCancel>
           <Button variant="destructive" onClick={handleDeleteAccount} disabled={isDeleting || !deletePassword}>
             {isDeleting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}

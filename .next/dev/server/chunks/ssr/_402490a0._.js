@@ -2722,6 +2722,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
     const [deletePassword, setDeletePassword] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [isDeleting, setIsDeleting] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [showDeletePassword, setShowDeletePassword] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [deleteError, setDeleteError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const handleChange = (field, value)=>{
         setFormData((prev)=>({
                 ...prev,
@@ -2794,6 +2795,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
     const handleDeleteAccount = async ()=>{
         if (!deletePassword) return;
         setIsDeleting(true);
+        setDeleteError(null);
         try {
             const res = await fetch("/api/user/delete", {
                 method: "POST",
@@ -2815,6 +2817,8 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
             });
             onLogout();
         } catch (error) {
+            setDeleteError(error.message);
+            // Also show toast for good measure, or maybe not if we show inline
             toast({
                 title: "Error",
                 description: error.message,
@@ -2822,8 +2826,9 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
             });
         } finally{
             setIsDeleting(false);
-            setDeleteDialogOpen(false);
-            setDeletePassword("");
+        // Do not close dialog if error
+        // setDeleteDialogOpen(false) 
+        // setDeletePassword("")
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -2842,19 +2847,19 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                     className: "w-4 h-4"
                                 }, void 0, false, {
                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                    lineNumber: 174,
+                                    lineNumber: 179,
                                     columnNumber: 11
                                 }, this),
                                 "Profile Settings"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                            lineNumber: 173,
+                            lineNumber: 178,
                             columnNumber: 9
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                        lineNumber: 172,
+                        lineNumber: 177,
                         columnNumber: 7
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogContent"], {
@@ -2865,12 +2870,12 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                     children: "Edit Profile"
                                 }, void 0, false, {
                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                    lineNumber: 180,
+                                    lineNumber: 185,
                                     columnNumber: 11
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                lineNumber: 179,
+                                lineNumber: 184,
                                 columnNumber: 9
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -2888,7 +2893,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Email (Read-only)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 185,
+                                                        lineNumber: 190,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2897,13 +2902,13 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         disabled: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 186,
+                                                        lineNumber: 191,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 184,
+                                                lineNumber: 189,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2914,7 +2919,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Name"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 189,
+                                                        lineNumber: 194,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2923,13 +2928,13 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         onChange: (e)=>handleChange("name", e.target.value)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 190,
+                                                        lineNumber: 195,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 188,
+                                                lineNumber: 193,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2940,7 +2945,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Age"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 197,
+                                                        lineNumber: 202,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2950,13 +2955,13 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         onChange: (e)=>handleChange("age", parseInt(e.target.value))
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 198,
+                                                        lineNumber: 203,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 196,
+                                                lineNumber: 201,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2967,7 +2972,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Gender"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 206,
+                                                        lineNumber: 211,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -2979,12 +2984,12 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                     placeholder: "Select gender"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                    lineNumber: 212,
+                                                                    lineNumber: 217,
                                                                     columnNumber: 19
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 211,
+                                                                lineNumber: 216,
                                                                 columnNumber: 17
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2994,7 +2999,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Male"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 215,
+                                                                        lineNumber: 220,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3002,7 +3007,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Female"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 216,
+                                                                        lineNumber: 221,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3010,25 +3015,25 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Other"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 217,
+                                                                        lineNumber: 222,
                                                                         columnNumber: 19
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 214,
+                                                                lineNumber: 219,
                                                                 columnNumber: 17
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 207,
+                                                        lineNumber: 212,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 205,
+                                                lineNumber: 210,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3039,7 +3044,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Height (cm)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 222,
+                                                        lineNumber: 227,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3049,13 +3054,13 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         onChange: (e)=>handleChange("height", parseFloat(e.target.value))
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 223,
+                                                        lineNumber: 228,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 221,
+                                                lineNumber: 226,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3066,7 +3071,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Weight (kg)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 231,
+                                                        lineNumber: 236,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3076,13 +3081,13 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         onChange: (e)=>handleChange("weight", parseFloat(e.target.value))
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 232,
+                                                        lineNumber: 237,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 230,
+                                                lineNumber: 235,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3093,7 +3098,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Goal"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 240,
+                                                        lineNumber: 245,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -3105,12 +3110,12 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                     placeholder: "Select goal"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                    lineNumber: 246,
+                                                                    lineNumber: 251,
                                                                     columnNumber: 19
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 245,
+                                                                lineNumber: 250,
                                                                 columnNumber: 17
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3120,7 +3125,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Lose Weight"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 249,
+                                                                        lineNumber: 254,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3128,7 +3133,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Build Muscle"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 250,
+                                                                        lineNumber: 255,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3136,7 +3141,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Improve Stamina"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 251,
+                                                                        lineNumber: 256,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3144,25 +3149,25 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Maintain"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 252,
+                                                                        lineNumber: 257,
                                                                         columnNumber: 19
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 248,
+                                                                lineNumber: 253,
                                                                 columnNumber: 17
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 241,
+                                                        lineNumber: 246,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 239,
+                                                lineNumber: 244,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3173,7 +3178,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Fitness Level"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 257,
+                                                        lineNumber: 262,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -3185,12 +3190,12 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                     placeholder: "Select level"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                    lineNumber: 263,
+                                                                    lineNumber: 268,
                                                                     columnNumber: 19
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 262,
+                                                                lineNumber: 267,
                                                                 columnNumber: 17
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3200,7 +3205,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Beginner"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 266,
+                                                                        lineNumber: 271,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3208,7 +3213,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Intermediate"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 267,
+                                                                        lineNumber: 272,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3216,25 +3221,25 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Advanced"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 268,
+                                                                        lineNumber: 273,
                                                                         columnNumber: 19
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 265,
+                                                                lineNumber: 270,
                                                                 columnNumber: 17
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 258,
+                                                        lineNumber: 263,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 256,
+                                                lineNumber: 261,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3245,7 +3250,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Location"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 273,
+                                                        lineNumber: 278,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3254,13 +3259,13 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         onChange: (e)=>handleChange("location", e.target.value)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 274,
+                                                        lineNumber: 279,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 272,
+                                                lineNumber: 277,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3271,7 +3276,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Stress Level"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 281,
+                                                        lineNumber: 286,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Select"], {
@@ -3283,12 +3288,12 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                     placeholder: "Select stress level"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                    lineNumber: 287,
+                                                                    lineNumber: 292,
                                                                     columnNumber: 19
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 286,
+                                                                lineNumber: 291,
                                                                 columnNumber: 17
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3298,7 +3303,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Low"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 290,
+                                                                        lineNumber: 295,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3306,7 +3311,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Medium"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 291,
+                                                                        lineNumber: 296,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$select$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3314,31 +3319,31 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "High"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 292,
+                                                                        lineNumber: 297,
                                                                         columnNumber: 19
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 289,
+                                                                lineNumber: 294,
                                                                 columnNumber: 17
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 282,
+                                                        lineNumber: 287,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 280,
+                                                lineNumber: 285,
                                                 columnNumber: 13
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                        lineNumber: 183,
+                                        lineNumber: 188,
                                         columnNumber: 11
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3349,7 +3354,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                 children: "Dietary Preferences (comma separated)"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 299,
+                                                lineNumber: 304,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3358,13 +3363,13 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                 onChange: (e)=>handleChange("dietaryPrefs", e.target.value.split(",").map((s)=>s.trim()))
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 300,
+                                                lineNumber: 305,
                                                 columnNumber: 13
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                        lineNumber: 298,
+                                        lineNumber: 303,
                                         columnNumber: 11
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3375,7 +3380,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                 children: "Medical History"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 308,
+                                                lineNumber: 313,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$textarea$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Textarea"], {
@@ -3384,13 +3389,13 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                 onChange: (e)=>handleChange("medicalHistory", e.target.value)
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 309,
+                                                lineNumber: 314,
                                                 columnNumber: 13
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                        lineNumber: 307,
+                                        lineNumber: 312,
                                         columnNumber: 11
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3401,7 +3406,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                 children: "Change Password"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 317,
+                                                lineNumber: 322,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3418,7 +3423,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "New Password"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 321,
+                                                                        lineNumber: 326,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3435,7 +3440,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                                 autoComplete: "new-password"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                                lineNumber: 323,
+                                                                                lineNumber: 328,
                                                                                 columnNumber: 21
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3451,30 +3456,30 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                                     className: "h-4 w-4"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                                    lineNumber: 337,
+                                                                                    lineNumber: 342,
                                                                                     columnNumber: 52
                                                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Eye$3e$__["Eye"], {
                                                                                     className: "h-4 w-4"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                                    lineNumber: 337,
+                                                                                    lineNumber: 342,
                                                                                     columnNumber: 85
                                                                                 }, this)
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                                lineNumber: 330,
+                                                                                lineNumber: 335,
                                                                                 columnNumber: 21
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 322,
+                                                                        lineNumber: 327,
                                                                         columnNumber: 19
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 320,
+                                                                lineNumber: 325,
                                                                 columnNumber: 17
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3485,7 +3490,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                         children: "Confirm New Password"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 342,
+                                                                        lineNumber: 347,
                                                                         columnNumber: 19
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3502,7 +3507,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                                 autoComplete: "new-password"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                                lineNumber: 344,
+                                                                                lineNumber: 349,
                                                                                 columnNumber: 21
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3518,36 +3523,36 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                                     className: "h-4 w-4"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                                    lineNumber: 358,
+                                                                                    lineNumber: 363,
                                                                                     columnNumber: 56
                                                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Eye$3e$__["Eye"], {
                                                                                     className: "h-4 w-4"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                                    lineNumber: 358,
+                                                                                    lineNumber: 363,
                                                                                     columnNumber: 89
                                                                                 }, this)
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                                lineNumber: 351,
+                                                                                lineNumber: 356,
                                                                                 columnNumber: 21
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                        lineNumber: 343,
+                                                                        lineNumber: 348,
                                                                         columnNumber: 19
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 341,
+                                                                lineNumber: 346,
                                                                 columnNumber: 17
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 319,
+                                                        lineNumber: 324,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3560,26 +3565,26 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                 className: "w-4 h-4 mr-2 animate-spin"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 369,
+                                                                lineNumber: 374,
                                                                 columnNumber: 39
                                                             }, this),
                                                             "Update Password"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 363,
+                                                        lineNumber: 368,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 318,
+                                                lineNumber: 323,
                                                 columnNumber: 13
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                        lineNumber: 316,
+                                        lineNumber: 321,
                                         columnNumber: 11
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3598,14 +3603,14 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                 className: "w-4 h-4"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 378,
+                                                                lineNumber: 383,
                                                                 columnNumber: 17
                                                             }, this),
                                                             "Logout"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 377,
+                                                        lineNumber: 382,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3618,20 +3623,20 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                 className: "w-4 h-4"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 382,
+                                                                lineNumber: 387,
                                                                 columnNumber: 17
                                                             }, this),
                                                             "Delete Account"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 381,
+                                                        lineNumber: 386,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 376,
+                                                lineNumber: 381,
                                                 columnNumber: 13
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3645,7 +3650,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                         children: "Cancel"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 387,
+                                                        lineNumber: 392,
                                                         columnNumber: 15
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3657,44 +3662,44 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                                 className: "w-4 h-4 mr-2 animate-spin"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                                lineNumber: 391,
+                                                                lineNumber: 396,
                                                                 columnNumber: 31
                                                             }, this),
                                                             "Save Changes"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                        lineNumber: 390,
+                                                        lineNumber: 395,
                                                         columnNumber: 15
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 386,
+                                                lineNumber: 391,
                                                 columnNumber: 13
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                        lineNumber: 375,
+                                        lineNumber: 380,
                                         columnNumber: 11
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                lineNumber: 182,
+                                lineNumber: 187,
                                 columnNumber: 9
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                        lineNumber: 178,
+                        lineNumber: 183,
                         columnNumber: 7
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                lineNumber: 171,
+                lineNumber: 176,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialog"], {
@@ -3708,20 +3713,20 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                     children: "Are you absolutely sure?"
                                 }, void 0, false, {
                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                    lineNumber: 403,
+                                    lineNumber: 408,
                                     columnNumber: 11
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialogDescription"], {
                                     children: "This action cannot be undone. This will permanently delete your account and remove your data from our servers. Please enter your password to confirm."
                                 }, void 0, false, {
                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                    lineNumber: 404,
+                                    lineNumber: 409,
                                     columnNumber: 11
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                            lineNumber: 402,
+                            lineNumber: 407,
                             columnNumber: 9
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3732,7 +3737,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                     children: "Password"
                                 }, void 0, false, {
                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                    lineNumber: 410,
+                                    lineNumber: 415,
                                     columnNumber: 11
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3745,7 +3750,7 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                             onChange: (e)=>setDeletePassword(e.target.value)
                                         }, void 0, false, {
                                             fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                            lineNumber: 412,
+                                            lineNumber: 417,
                                             columnNumber: 13
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3758,30 +3763,38 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                                 className: "h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 425,
+                                                lineNumber: 430,
                                                 columnNumber: 37
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Eye$3e$__["Eye"], {
                                                 className: "h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                                lineNumber: 425,
+                                                lineNumber: 430,
                                                 columnNumber: 70
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                            lineNumber: 418,
+                                            lineNumber: 423,
                                             columnNumber: 13
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                    lineNumber: 411,
+                                    lineNumber: 416,
                                     columnNumber: 11
+                                }, this),
+                                deleteError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "text-sm text-red-500 mt-2",
+                                    children: deleteError
+                                }, void 0, false, {
+                                    fileName: "[project]/components/views/profile-settings-dialog.tsx",
+                                    lineNumber: 434,
+                                    columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                            lineNumber: 409,
+                            lineNumber: 414,
                             columnNumber: 9
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$alert$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AlertDialogFooter"], {
@@ -3790,11 +3803,12 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                     onClick: ()=>{
                                         setDeleteDialogOpen(false);
                                         setDeletePassword("");
+                                        setDeleteError(null);
                                     },
                                     children: "Cancel"
                                 }, void 0, false, {
                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                    lineNumber: 430,
+                                    lineNumber: 438,
                                     columnNumber: 11
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3806,31 +3820,31 @@ function ProfileSettingsDialog({ userData, onUpdate, onLogout }) {
                                             className: "w-4 h-4 mr-2 animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                            lineNumber: 435,
+                                            lineNumber: 444,
                                             columnNumber: 28
                                         }, this),
                                         "Delete Account"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                                    lineNumber: 434,
+                                    lineNumber: 443,
                                     columnNumber: 11
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                            lineNumber: 429,
+                            lineNumber: 437,
                             columnNumber: 9
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                    lineNumber: 401,
+                    lineNumber: 406,
                     columnNumber: 7
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/views/profile-settings-dialog.tsx",
-                lineNumber: 400,
+                lineNumber: 405,
                 columnNumber: 5
             }, this)
         ]

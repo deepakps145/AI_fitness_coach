@@ -1,68 +1,56 @@
-[00:00:00.843] Server  LOG      ✓ Ready in 587ms
-[00:00:09.050] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:00:09.050] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
-[00:00:09.050] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765365826620}
-[00:00:18.732] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signin color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signin","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765365836303}
-[00:00:21.731] Server  LOG     POST /api/user request: "login" "deepakps145@gmail.com"
-[00:00:21.732] Server  LOG     Fetching user for login: "deepakps145@gmail.com"
-[00:00:23.385] Server  LOG     User not found: "deepakps145@gmail.com"
-[00:00:32.262] Server  LOG     POST /api/user request: "login" "deepakps2545@gmail.com"
-[00:00:32.263] Server  LOG     Fetching user for login: "deepakps2545@gmail.com"
-[00:00:32.399] Server  LOG     Login successful: "deepakps2545@gmail.com"
-[00:02:22.033] Server  ERROR   /api/speak error Error: {"detail":{"status":"quota_exceeded","message":"This request exceeds your quota of 10000. You have 22 credits remaining, while 148 credits are required for this request."}}
-[00:02:22.139] Browser ERROR   Audio playback failed {}
-[00:02:24.727] Server  ERROR   /api/speak error Error: {"detail":{"status":"quota_exceeded","message":"This request exceeds your quota of 10000. You have 22 credits remaining, while 148 credits are required for this request."}}
-[00:02:24.833] Browser ERROR   Audio playback failed {}
-[00:03:11.526] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
-[00:03:11.526] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
-[00:03:14.927] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765366012511}
-[00:04:52.070] Server  LOG        Reload env: .env.local
-[00:04:53.873] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
-
-- A server/client branch `if (typeof window !== 'undefined')`.
-- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-- Date formatting in a user's locale which doesn't match the server.
-- External changing data without sending a snapshot of it along with the HTML.
-- Invalid HTML tag nesting.
-
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
-
-%s%s https://react.dev/link/hydration-mismatch 
-
-  ...
-    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
-      <AppDevOverlayErrorBoundary globalError={[...]}>
-        <ReplaySsrOnlyErrors>
-        <DevRootHTTPAccessFallbackBoundary>
-          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
-            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <Head>
-                  <__next_root_layout_boundary__>
-                    <SegmentViewNode type="layout" pagePath="layout.tsx">
-                      <SegmentTrieNode>
-                      <link>
-                      <script>
-                      <script>
-                      <RootLayout>
-                        <html
-                          lang="en"
--                         suppresshydrationwarning="true"
--                         data-lt-installed="true"
-                        >
-                  ...
-
-[00:04:53.873] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:04:53.873] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
-[00:04:53.873] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765366111463}
-[00:05:18.248] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
-[00:05:18.248] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
-[00:05:18.248] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765366135838}
-[00:05:23.465] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signin color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signin","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765366141053}
-[00:05:26.592] Server  LOG     POST /api/user request: "login" "deepakps2545@gmail.com"
-[00:05:26.593] Server  LOG     Fetching user for login: "deepakps2545@gmail.com"
-[00:05:27.879] Server  LOG     Login successful: "deepakps2545@gmail.com"
-[00:05:43.670] Server  ERROR   /api/speak error Error: {"detail":{"status":"quota_exceeded","message":"This request exceeds your quota of 10000. You have 22 credits remaining, while 57 credits are required for this request."}}
-[00:05:43.776] Browser ERROR   Audio playback failed {}
-[00:08:22.576] Server  LOG        Reload env: .env.local
+[00:00:00.963] Server  LOG      ✓ Ready in 659ms
+[00:00:08.026] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:00:08.026] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/","route":"/"}
+[00:00:08.026] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367094695}
+[00:00:13.015] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signup color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signup","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367099701}
+[00:00:23.026] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:00:23.026] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:01:04.331] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367151016}
+[00:01:06.560] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signup color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signup","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367153249}
+[00:01:16.878] Server  LOG     POST /api/user request: "signup" "deepakps145@gmail.com"
+[00:01:16.879] Server  LOG     Checking if user exists: "deepakps145@gmail.com"
+[00:01:17.608] Server  LOG     User already exists: "deepakps145@gmail.com"
+[00:01:24.480] Server  LOG     POST /api/user request: "signup" "deepakps45@gmail.com"
+[00:01:24.480] Server  LOG     Checking if user exists: "deepakps45@gmail.com"
+[00:01:24.572] Server  LOG     Creating new user: "deepakps45@gmail.com"
+[00:01:24.674] Server  LOG     User created successfully: "deepakps45@gmail.com"
+[00:02:15.950] Server  ERROR   /api/generate-plan error SyntaxError: Expected ',' or '}' after property value in JSON at position 252 (line 10 column 5)
+[00:02:16.061] Browser ERROR   Plan generation failed {}
+[00:02:48.659] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367255343}
+[00:02:51.472] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signup color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signup","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367258160}
+[00:02:59.954] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367266633}
+[00:03:29.058] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signin color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signin","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367295746}
+[00:03:35.076] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:03:35.076] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/coach","route":"/coach"}
+[00:03:35.076] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signin color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signin","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367301764}
+[00:04:19.058] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:04:19.058] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:06:34.503] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[00:06:34.503] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/coach","route":"/coach"}
+[00:06:34.503] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signin color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signin","r":"","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367481262}
+[00:06:40.118] Server  LOG      ✓ Compiled in 108ms
+[00:06:47.373] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:06:47.373] Browser WARN    %c%s color: rgba(124, 124, 124, 0.75) Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:06:49.678] Server  LOG      ✓ Compiled in 159ms
+[00:06:57.556] Server  LOG      ✓ Compiled in 132ms
+[00:07:04.462] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367511146}
+[00:07:11.823] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signin color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signin","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367518507}
+[00:07:15.020] Server  LOG     POST /api/user request: "login" "deepakps2545@gmail.com"
+[00:07:15.020] Server  LOG     Fetching user for login: "deepakps2545@gmail.com"
+[00:07:15.826] Server  LOG     Login successful: "deepakps2545@gmail.com"
+[00:07:25.876] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:07:25.876] Browser WARN    %c%s color: rgba(124, 124, 124, 0.75) Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:07:36.097] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367542783}
+[00:07:39.269] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/coach?view=signup color: rgb(120, 120, 120) color: inherit {"dp":"/coach","o":"http://localhost:3000/coach?view=signup","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367545958}
+[00:07:44.004] Server  LOG     POST /api/user request: "signup" "deepakps145@gmail.com"
+[00:07:44.005] Server  LOG     Checking if user exists: "deepakps145@gmail.com"
+[00:07:44.185] Server  LOG     User already exists: "deepakps145@gmail.com"
+[00:07:50.275] Server  LOG     POST /api/user request: "login" "deepakps145@gmail.com"
+[00:07:50.275] Server  LOG     Fetching user for login: "deepakps145@gmail.com"
+[00:07:50.431] Server  LOG     Invalid password for: "deepakps145@gmail.com"
+[00:07:54.945] Server  LOG     POST /api/user request: "login" "deepakps145@gmail.com"
+[00:07:54.946] Server  LOG     Fetching user for login: "deepakps145@gmail.com"
+[00:07:55.244] Server  LOG     Login successful: "deepakps145@gmail.com"
+[00:08:56.692] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:08:56.692] Browser WARN    %c%s color: rgba(124, 124, 124, 0.75) Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:09:11.612] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.3.1","sv":"0.1.3","ts":1765367638296}
