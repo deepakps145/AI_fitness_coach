@@ -1,0 +1,147 @@
+import { Buffer } from "buffer"
+import type { PlanContent } from "@/lib/plan-types"
+
+const GEMINI_MODEL = process.env.GEMINI_MODEL?.trim() || "gemini-2.5-flash"
+const GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta"
+
+const DEFAULT_MOTIVATION = "Your plan is ready. Stay consistent and you'll see results."
+
+function buildPrompt(body: Record<string, unknown>) {
+  const lines = [
+    "You are an expert fitness coach and dietitian.",
+    "Respond ONLY with JSON. Do not include code fences or prose.",
+    "Fields: workouts (array of {name, sets, reps, rest, focus, imagePrompt}), meals (array of {meal, items, calories, protein, carbs, fats, imagePrompt}), tips (array of strings), motivation (single string).",
+    "Keep workouts 4-6 items, meals 4 items (breakfast, lunch, snack, dinner).",
+    "Tailor to the user's goals, level, location, dietary preferences, and medical notes.",
+    `User data: ${JSON.stringify(body)}`,
+  ]
+  return lines.join("\n")
+}
+
+function buildTipsPrompt(body: Record<string, unknown>, plan?: Pick<PlanContent, "workouts" | "meals">) {
+  const lines = [
+    "You are a motivational fitness coach.",
+    "Respond ONLY with JSON containing { \"tips\": string[], \"motivation\": string }.",
+    "Tips must be actionable (max 2 sentences each). Motivation should be a single uplifting quote.",
+    `User data: ${JSON.stringify(body)}`,
+  ]
+  if (plan) {
+    lines.push(`Current plan context: ${JSON.stringify(plan)}`)
+  }
+  return lines.join("\n")
+}
+
+const extractJson = (text: string): string | null => {
+  const fenced = text.match(/```json([\s\S]*?)```/i)
+  if (fenced?.[1]) return fenced[1].trim()
+  const braces = text.match(/\{[\s\S]*\}/)
+  if (braces?.[0]) return braces[0].trim()
+  return null
+}
+
+const repairJson = (text: string): string => {
+  let cleaned = text.replace(/```/g, "").replace(/json\s*/gi, "").trim()
+  cleaned = cleaned.replace(/'([^']*)'/g, '"$1"')
+  cleaned = cleaned.replace(/([,{]\s*)([A-Za-z0-9_]+)(\s*):/g, '$1"$2"$3:')
+  return cleaned
+}
+
+async function requestGemini(prompt: string) {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY is not set")
+  }
+
+  const geminiRes = await fetch(
+    `${GEMINI_BASE}/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: prompt }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.8,
+          maxOutputTokens: 8192,
+          responseMimeType: "application/json",
+        },
+      }),
+    },
+  )
+
+  if (!geminiRes.ok) {
+    const errorText = await geminiRes.text()
+    throw new Error(errorText || "Gemini request failed")
+  }
+
+  const geminiJson = (await geminiRes.json()) as any
+  const parts = geminiJson?.candidates?.[0]?.content?.parts
+  const rawText: string | undefined = Array.isArray(parts)
+    ? parts
+        .map((p: any) => {
+          if (typeof p?.text === "string") return p.text
+          if (p?.inlineData?.data) {
+            try {
+              const buf = Buffer.from(p.inlineData.data, "base64").toString("utf8")
+              return buf
+            } catch {
+              return ""
+            }
+          }
+          if (p?.json) {
+            try {
+              return JSON.stringify(p.json)
+            } catch {
+              return ""
+            }
+          }
+          return ""
+        })
+        .join("\n")
+        .trim()
+    : undefined
+  if (!rawText) {
+    throw new Error("No content returned from Gemini")
+  }
+
+  return rawText
+}
+
+function parseJsonPayload<T>(rawText: string): T {
+  try {
+    const cleaned = extractJson(rawText) ?? rawText.trim()
+    return JSON.parse(cleaned) as T
+  } catch (err) {
+    const repaired = repairJson(rawText)
+    return JSON.parse(repaired) as T
+  }
+}
+
+export async function generatePlanFromGemini(body: Record<string, unknown>): Promise<PlanContent> {
+  const prompt = buildPrompt(body)
+  const rawText = await requestGemini(prompt)
+  const parsed = parseJsonPayload<PlanContent>(rawText)
+
+  return {
+    workouts: parsed.workouts || [],
+    meals: parsed.meals || [],
+    tips: parsed.tips || [],
+    motivation: parsed.motivation || DEFAULT_MOTIVATION,
+  }
+}
+
+export async function generateTipsFromGemini(
+  body: Record<string, unknown>,
+  plan?: Pick<PlanContent, "workouts" | "meals">,
+): Promise<{ tips: string[]; motivation: string }> {
+  const prompt = buildTipsPrompt(body, plan)
+  const rawText = await requestGemini(prompt)
+  const parsed = parseJsonPayload<{ tips?: string[]; motivation?: string }>(rawText)
+  return {
+    tips: parsed.tips || [],
+    motivation: parsed.motivation || DEFAULT_MOTIVATION,
+  }
+}

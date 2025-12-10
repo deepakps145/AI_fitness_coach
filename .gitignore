@@ -1,0 +1,9 @@
+node_modules
+.env.local
+# Ignore project folders in the parent directory
+../Agamya-phish/
+../Balm_conn_Frontend/
+../Disaster-Response-Coordination-Hub/
+../Internship/
+../JavaScript/
+../React/
