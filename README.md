@@ -17,8 +17,9 @@ GEMINI_API_KEY=your_google_api_key
 ELEVENLABS_API_KEY=your_elevenlabs_api_key
 ELEVENLABS_VOICE_ID=21m00Tcm4TlvDq8ikWAM # or your custom voice
 DATABASE_URL=postgresql://<user>:<password>@<host>/<db>?sslmode=require
+
 # For PostgREST/Neon REST (used by /api/plan)
-NEON_REST_URL=https://ep-polished-morning-a1gb3y6f.apirest.ap-southeast-1.aws.neon.tech/neondb/rest/v1
+NEON_REST_URL=https://password_of_access_url.aws.neon.tech/neondb/rest/v1
 NEON_REST_KEY=your_neon_rest_key
 ```
 

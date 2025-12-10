@@ -184,3 +184,18 @@
     box-shadow: 0 0 40px rgba(126, 150, 255, 0.25), 0 0 80px rgba(62, 203, 246, 0.2);
   }
 }
+
+@keyframes gradient-x {
+  0%, 100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 3s ease infinite;
+}

@@ -1,0 +1,13 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/generate-image/route": "/api/generate-image",
+  "/api/generate-plan/route": "/api/generate-plan",
+  "/api/generate-tips/route": "/api/generate-tips",
+  "/api/plan/route": "/api/plan",
+  "/api/speak/route": "/api/speak",
+  "/api/user/change-password/route": "/api/user/change-password",
+  "/api/user/route": "/api/user",
+  "/coach/page": "/coach",
+  "/page": "/"
+}

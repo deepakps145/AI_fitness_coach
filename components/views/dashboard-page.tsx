@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import type { UserData } from "../app-wrapper"
 import type { PlanContent, WorkoutItem, MealItem } from "@/lib/plan-types"
 import { Download, Volume2, Zap, Moon, Sun, ImageIcon, LayoutGrid } from "lucide-react"
+import { ProfileSettingsDialog } from "./profile-settings-dialog"
 
 interface DashboardPageProps {
   userData: UserData
@@ -15,16 +16,18 @@ interface DashboardPageProps {
   onRegenerate: () => void
   onSpeak: (section: string, text: string) => Promise<void>
   onGenerateImage: (prompt: string) => Promise<string>
+  onUpdateProfile: (updatedData: Partial<UserData>) => Promise<void>
+  onLogout: () => void
 }
 
-export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpeak, onGenerateImage }: DashboardPageProps) {
+export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate, onSpeak, onGenerateImage, onUpdateProfile, onLogout }: DashboardPageProps) {
   const [activeView, setActiveView] = useState<"overview" | "workout" | "diet">("overview")
   const [imageLoading, setImageLoading] = useState<string | null>(null)
   const [localPlan, setLocalPlan] = useState<PlanContent>(plan)
   const [isExporting, setIsExporting] = useState(false)
   const [audioCooldown, setAudioCooldown] = useState(false)
   const cooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const cooldownMs = 2500
+  const cooldownMs = 3000
 
   useEffect(() => {
     setLocalPlan(plan)
@@ -179,21 +182,23 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
       className="min-h-screen bg-gradient-to-br from-background via-background to-slate-900"
     >
       {/* Fixed Header */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
         className="sticky top-0 z-40 backdrop-blur-xl bg-white/10 border-b border-white/20"
       >
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between md:py-4 md:gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-cyan-400 break-words">Welcome, {userData.name}</h1>
-            <p className="text-sm text-muted-foreground mt-1">Your personalized fitness plan awaits</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-cyan-400 break-words">Welcome, {userData.name}</h1>
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">Your personalized fitness plan awaits</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 justify-end">
@@ -209,6 +214,7 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
               <Download className="w-4 h-4" />
               {isExporting ? "Exporting..." : "Export PDF"}
             </Button>
+            <ProfileSettingsDialog userData={userData} onUpdate={onUpdateProfile} onLogout={onLogout} />
           </div>
         </div>
       </motion.header>
@@ -224,7 +230,7 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
           <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl" />
           <div className="relative z-10">
             <p className="text-xl font-semibold text-cyan-400 italic">{motivation}</p>
-            <p className="text-sm text-muted-foreground mt-2">AI motivation</p>
+            <p className="text-sm text-muted-foreground mt-2">Today's motivation</p>
           </div>
         </motion.div>
 
@@ -383,12 +389,32 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                 className="group relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl overflow-hidden"
               >
                 {/* Image */}
-                <div className="relative h-40 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 overflow-hidden">
-                  <img
-                    src={exercise.imageUrl || "/placeholder.svg"}
-                    alt={exercise.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
+                <div className="relative h-40 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 overflow-hidden flex items-center justify-center">
+                  {exercise.imageUrl ? (
+                    <img
+                      src={exercise.imageUrl}
+                      alt={exercise.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      className="bg-white/10 hover:bg-white/20 text-white"
+                      onClick={async (e) => {
+                        e.stopPropagation()
+                        await handleImage(exercise)
+                      }}
+                    >
+                      {imageLoading === exercise.name ? (
+                        "Generating..."
+                      ) : (
+                        <>
+                          <ImageIcon className="w-4 h-4 mr-2" />
+                          Generate Image
+                        </>
+                      )}
+                    </Button>
+                  )}
                 </div>
 
                 {/* Content */}
@@ -413,7 +439,7 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                   <div className="flex gap-2">
                     <button
                       disabled={audioCooldown}
-                      className="flex-1 p-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white transition flex items-center justify-center gap-2"
+                      className="w-full p-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() =>
                         speakWithCooldown(
                           "workout",
@@ -423,14 +449,6 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                     >
                       <Volume2 className="w-4 h-4" />
                       <span className="text-sm font-medium">Audio Cue</span>
-                    </button>
-                    <button
-                      className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition flex items-center justify-center"
-                      onClick={async () => {
-                        await handleImage(exercise)
-                      }}
-                    >
-                      {imageLoading === exercise.name ? "..." : <ImageIcon className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
@@ -457,12 +475,32 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                 className="group relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl overflow-hidden"
               >
                 {/* Image */}
-                <div className="relative h-48 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 overflow-hidden">
-                  <img
-                    src={meal.imageUrl || "/placeholder.svg"}
-                    alt={meal.meal}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
+                <div className="relative h-48 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 overflow-hidden flex items-center justify-center">
+                  {meal.imageUrl ? (
+                    <img
+                      src={meal.imageUrl}
+                      alt={meal.meal}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      className="bg-white/10 hover:bg-white/20 text-white"
+                      onClick={async (e) => {
+                        e.stopPropagation()
+                        await handleImage(meal)
+                      }}
+                    >
+                      {imageLoading === meal.meal ? (
+                        "Generating..."
+                      ) : (
+                        <>
+                          <ImageIcon className="w-4 h-4 mr-2" />
+                          Generate Image
+                        </>
+                      )}
+                    </Button>
+                  )}
                 </div>
 
                 {/* Content */}
@@ -495,7 +533,7 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                     <Button
                       disabled={audioCooldown}
                       variant="outline"
-                      className="flex-1 bg-white/10 text-white"
+                      className="w-full bg-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() =>
                         speakWithCooldown(
                           "meal",
@@ -505,15 +543,6 @@ export function DashboardPage({ userData, plan, theme, toggleTheme, onRegenerate
                     >
                       <Volume2 className="w-4 h-4 mr-2" />
                       Hear Meal
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="bg-white/5"
-                      onClick={async () => {
-                        await handleImage(meal)
-                      }}
-                    >
-                      {imageLoading === meal.meal ? "..." : <ImageIcon className="w-4 h-4" />}
                     </Button>
                   </div>
                 </div>

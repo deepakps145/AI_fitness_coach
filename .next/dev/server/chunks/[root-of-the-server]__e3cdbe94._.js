@@ -67,6 +67,8 @@ __turbopack_context__.s([
     ()=>fetchPlanByEmail,
     "fetchUserAccount",
     ()=>fetchUserAccount,
+    "updateUserPassword",
+    ()=>updateUserPassword,
     "updateUserProfile",
     ()=>updateUserProfile,
     "upsertPlanRecord",
@@ -129,12 +131,61 @@ function normalizeProfile(profile) {
         stressLevel: profile.stressLevel ?? null
     };
 }
+function mapDbUserToUserAccount(row) {
+    return {
+        email: row.email,
+        password_hash: row.password_hash,
+        name: row.name,
+        age: row.age,
+        gender: row.gender,
+        height: row.height ? parseFloat(row.height) : undefined,
+        weight: row.weight ? parseFloat(row.weight) : undefined,
+        goal: row.goal,
+        level: row.level,
+        location: row.location,
+        dietaryPrefs: row.dietary_prefs,
+        medicalHistory: row.medical_history,
+        stressLevel: row.stress_level,
+        created_at: row.created_at,
+        updated_at: row.updated_at
+    };
+}
 async function fetchPlanByEmail(email) {
     await initPromise;
-    const { rows } = await pool.query(`select email, user_data, plan, updated_at from ${TABLE} where email = $1 limit 1`, [
+    // Fetch plan from user_plans and latest profile from user_accounts
+    const { rows } = await pool.query(`select 
+       p.email, 
+       p.plan, 
+       p.updated_at,
+       u.name, u.age, u.gender, u.height, u.weight, u.goal, u.level, u.location, 
+       u.dietary_prefs, u.medical_history, u.stress_level
+     from ${TABLE} p
+     left join ${USER_TABLE} u on p.email = u.email
+     where p.email = $1 limit 1`, [
         email
     ]);
-    return rows[0] || null;
+    if (!rows[0]) return null;
+    const row = rows[0];
+    // Construct user_data from the joined user_accounts table
+    const user_data = {
+        name: row.name,
+        age: row.age,
+        gender: row.gender,
+        height: row.height ? parseFloat(row.height) : undefined,
+        weight: row.weight ? parseFloat(row.weight) : undefined,
+        goal: row.goal,
+        level: row.level,
+        location: row.location,
+        dietaryPrefs: row.dietary_prefs,
+        medicalHistory: row.medical_history,
+        stressLevel: row.stress_level
+    };
+    return {
+        email: row.email,
+        user_data,
+        plan: row.plan,
+        updated_at: row.updated_at
+    };
 }
 async function upsertPlanRecord(email, userData, plan) {
     await initPromise;
@@ -156,7 +207,14 @@ async function fetchUserAccount(email) {
     const { rows } = await pool.query(`select * from ${USER_TABLE} where email = $1 limit 1`, [
         email
     ]);
-    return rows[0] || null;
+    return rows[0] ? mapDbUserToUserAccount(rows[0]) : null;
+}
+async function updateUserPassword(email, passwordHash) {
+    await initPromise;
+    await pool.query(`update ${USER_TABLE} set password_hash = $2, updated_at = now() where email = $1`, [
+        email,
+        passwordHash
+    ]);
 }
 async function upsertUserAccount(account) {
     await initPromise;
@@ -197,7 +255,7 @@ async function upsertUserAccount(account) {
         normalized.medicalHistory,
         normalized.stressLevel
     ]);
-    return rows[0];
+    return mapDbUserToUserAccount(rows[0]);
 }
 async function updateUserProfile(email, profile) {
     await initPromise;
@@ -231,7 +289,7 @@ async function updateUserProfile(email, profile) {
         normalized.medicalHistory,
         normalized.stressLevel
     ]);
-    return rows[0] || null;
+    return rows[0] ? mapDbUserToUserAccount(rows[0]) : null;
 }
 __turbopack_async_result__();
 } catch(e) { __turbopack_async_result__(e); } }, false);}),
@@ -242,7 +300,9 @@ return __turbopack_context__.a(async (__turbopack_handle_async_dependencies__, _
 
 __turbopack_context__.s([
     "POST",
-    ()=>POST
+    ()=>POST,
+    "PUT",
+    ()=>PUT
 ]);
 var __TURBOPACK__imported__module__$5b$externals$5d2f$crypto__$5b$external$5d$__$28$crypto$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/crypto [external] (crypto, cjs)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/server.js [app-route] (ecmascript)");
@@ -259,7 +319,9 @@ function hashPassword(password) {
 }
 async function POST(req) {
     try {
-        const { mode, email, password, profile } = await req.json();
+        const body = await req.json();
+        console.log("POST /api/user request:", body.mode, body.email);
+        const { mode, email, password, profile } = body;
         if (!mode || !email || !password) {
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: "Missing email, password, or mode"
@@ -269,25 +331,31 @@ async function POST(req) {
         }
         const passwordHash = hashPassword(password);
         if (mode === "signup") {
+            console.log("Checking if user exists:", email);
             const existing = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["fetchUserAccount"])(email);
             if (existing) {
+                console.log("User already exists:", email);
                 return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                     error: "Email already exists"
                 }, {
                     status: 409
                 });
             }
+            console.log("Creating new user:", email);
             const record = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["upsertUserAccount"])({
                 email,
                 password_hash: passwordHash,
                 ...profile
             });
+            console.log("User created successfully:", record.email);
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 user: record
             });
         }
+        console.log("Fetching user for login:", email);
         const record = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["fetchUserAccount"])(email);
         if (!record) {
+            console.log("User not found:", email);
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: "Account not found"
             }, {
@@ -295,16 +363,52 @@ async function POST(req) {
             });
         }
         if (record.password_hash !== passwordHash) {
+            console.log("Invalid password for:", email);
             return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
                 error: "Invalid credentials"
             }, {
                 status: 401
             });
         }
+        console.log("Login successful:", email);
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             user: record
         });
     } catch (error) {
+        console.error("Error in POST /api/user:", error);
+        const message = error.message;
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            error: message
+        }, {
+            status: 500
+        });
+    }
+}
+async function PUT(req) {
+    try {
+        const body = await req.json();
+        console.log("PUT /api/user request:", body.email);
+        const { email, profile } = body;
+        if (!email || !profile) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "Missing email or profile data"
+            }, {
+                status: 400
+            });
+        }
+        const updatedUser = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$backend$2f$db$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["updateUserProfile"])(email, profile);
+        if (!updatedUser) {
+            return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+                error: "User not found"
+            }, {
+                status: 404
+            });
+        }
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
+            user: updatedUser
+        });
+    } catch (error) {
+        console.error("Error in PUT /api/user:", error);
         const message = error.message;
         return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["NextResponse"].json({
             error: message

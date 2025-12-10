@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -8,16 +9,14 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Dumbbell } from "lucide-react"
 
-interface AuthPageProps {
+interface SignInPageProps {
   onAuth: (email: string) => void
+  onNavigateToSignUp: () => void
 }
 
-export function AuthPage({ onAuth }: AuthPageProps) {
+export function SignInPage({ onAuth, onNavigateToSignUp }: SignInPageProps) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [name, setName] = useState("")
-  const [isSignUp, setIsSignUp] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -26,21 +25,11 @@ export function AuthPage({ onAuth }: AuthPageProps) {
     setError(null)
     setIsSubmitting(true)
     if (email && password) {
-      if (isSignUp) {
-        if (password !== confirmPassword) {
-          setError("Passwords do not match")
-          setIsSubmitting(false)
-          return
-        }
-      }
-
-      const mode = isSignUp ? "signup" : "login"
       try {
-        const profile = isSignUp && name ? { name } : undefined
         const res = await fetch("/api/user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mode, email, password, profile }),
+          body: JSON.stringify({ mode: "login", email, password }),
         })
 
         if (!res.ok) {
@@ -91,26 +80,14 @@ export function AuthPage({ onAuth }: AuthPageProps) {
             </div>
 
             <h1 className="text-3xl font-bold text-center text-foreground mb-2">
-              {isSignUp ? "Create Account" : "Welcome Back"}
+              Welcome Back
             </h1>
             <p className="text-center text-muted-foreground mb-8 text-sm">
-              {isSignUp ? "Start your fitness journey today" : "Get your personalized fitness plan"}
+              Get your personalized fitness plan
             </p>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
-              {isSignUp && (
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Name</label>
-                  <Input
-                    type="text"
-                    placeholder="John Doe"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="bg-white/5 border-white/10 focus:border-cyan-400/50"
-                  />
-                </div>
-              )}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Email</label>
                 <Input
@@ -133,19 +110,6 @@ export function AuthPage({ onAuth }: AuthPageProps) {
                 />
               </div>
 
-                {isSignUp && (
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">Confirm Password</label>
-                    <Input
-                      type="password"
-                      placeholder="••••••••"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="bg-white/5 border-white/10 focus:border-cyan-400/50"
-                    />
-                  </div>
-                )}
-
               {/* Animated CTA Button */}
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="relative mt-6">
                 <motion.div
@@ -164,19 +128,19 @@ export function AuthPage({ onAuth }: AuthPageProps) {
                   disabled={isSubmitting}
                   className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold relative"
                 >
-                  {isSubmitting ? "Please wait..." : isSignUp ? "Sign Up" : "Login"}
+                  {isSubmitting ? "Please wait..." : "Login"}
                 </Button>
               </motion.div>
             </form>
 
             {/* Toggle Auth Mode */}
             <p className="text-center text-sm text-muted-foreground mt-6">
-              {isSignUp ? "Already have an account?" : "Don't have an account?"}
+              Don't have an account?
               <button
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={onNavigateToSignUp}
                 className="ml-1 text-cyan-400 hover:text-cyan-300 font-medium transition"
               >
-                {isSignUp ? "Login" : "Sign Up"}
+                Sign Up
               </button>
             </p>
             {error && <p className="text-center text-sm text-red-400 mt-3">{error}</p>}

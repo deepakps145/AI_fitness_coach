@@ -1,15 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import { AnimatePresence } from "framer-motion"
-import { AuthPage } from "./views/auth-page"
+import { SignInPage } from "./views/signin-page"
+import { SignUpPage } from "./views/signup-page"
 import { OnboardingPage } from "./views/onboarding-page"
 import { LoadingPage } from "./views/loading-page"
 import { DashboardPage } from "./views/dashboard-page"
 import { generatePlan, generateImage, speakText, fetchStoredPlan, savePlan, regenerateTips } from "@/lib/ai"
 import type { PlanContent } from "@/lib/plan-types"
 
-export type AppView = "auth" | "onboarding" | "loading" | "dashboard"
+export type AppView = "signin" | "signup" | "onboarding" | "loading" | "dashboard"
 
 export interface UserData {
   email: string
@@ -29,24 +31,33 @@ export interface UserData {
 const SESSION_KEY = "fitai:session-email"
 
 export function AppWrapper() {
-  const [currentView, setCurrentView] = useState<AppView>("auth")
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const initialView = searchParams.get("view") === "signup" ? "signup" : "signin"
+  const [currentView, setCurrentView] = useState<AppView>(initialView)
   const [userData, setUserData] = useState<Partial<UserData>>({})
   const [plan, setPlan] = useState<PlanContent | null>(null)
   const [theme, setTheme] = useState<"dark" | "light">("dark")
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [hasFetchedRemote, setHasFetchedRemote] = useState(false)
+
   useEffect(() => {
-    setHasFetchedRemote(false)
+    if (typeof window !== "undefined") {
+      const storedEmail = localStorage.getItem(SESSION_KEY)
+      if (storedEmail) {
+        setUserData((prev) => ({ ...prev, email: storedEmail }))
+        // If we have a stored email, we can skip the auth screen and go to loading/dashboard
+        // But we need to fetch the plan first.
+        // The existing fetchRemote effect will handle the fetching if userData.email is set.
+        // We just need to set the view to loading initially if we found a session.
+        setCurrentView("loading")
+      }
+    }
   }, [])
 
   useEffect(() => {
-    if (typeof window === "undefined") return
-    const storedEmail = window.localStorage.getItem(SESSION_KEY)
-    if (storedEmail) {
-      setUserData((prev) => ({ ...prev, email: storedEmail }))
-      setCurrentView("loading")
-    }
+    setHasFetchedRemote(false)
   }, [])
 
   useEffect(() => {
@@ -71,8 +82,18 @@ export function AppWrapper() {
     setCurrentView("loading")
     setHasFetchedRemote(false)
     if (typeof window !== "undefined") {
-      window.localStorage.setItem(SESSION_KEY, email)
+      localStorage.setItem(SESSION_KEY, email)
     }
+  }
+
+  const handleLogout = () => {
+    setUserData({})
+    setPlan(null)
+    setCurrentView("signin")
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(SESSION_KEY)
+    }
+    router.push("/")
   }
 
   useEffect(() => {
@@ -148,10 +169,40 @@ export function AppWrapper() {
     return url
   }
 
+  const handleUpdateProfile = async (updatedData: Partial<UserData>) => {
+    if (!userData.email) return
+    try {
+      const res = await fetch("/api/user", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userData.email, profile: updatedData }),
+      })
+      if (!res.ok) throw new Error("Failed to update profile")
+      const { user } = await res.json()
+      setUserData((prev) => ({ ...prev, ...user }))
+    } catch (err) {
+      console.error("Profile update error", err)
+      throw err
+    }
+  }
+
   return (
     <div>
       <AnimatePresence mode="wait">
-        {currentView === "auth" && <AuthPage key="auth" onAuth={handleAuth} />}
+        {currentView === "signin" && (
+          <SignInPage
+            key="signin"
+            onAuth={handleAuth}
+            onNavigateToSignUp={() => setCurrentView("signup")}
+          />
+        )}
+        {currentView === "signup" && (
+          <SignUpPage
+            key="signup"
+            onAuth={handleAuth}
+            onNavigateToSignIn={() => setCurrentView("signin")}
+          />
+        )}
         {currentView === "onboarding" && (
           <OnboardingPage
             key="onboarding"
@@ -173,6 +224,8 @@ export function AppWrapper() {
             onRegenerate={() => handleGeneratePlan(userData)}
             onSpeak={handleSpeak}
             onGenerateImage={handleGenerateImage}
+            onUpdateProfile={handleUpdateProfile}
+            onLogout={handleLogout}
           />
         )}
       </AnimatePresence>

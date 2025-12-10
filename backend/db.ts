@@ -67,13 +67,66 @@ function normalizeProfile(profile: Partial<UserData>) {
   }
 }
 
+function mapDbUserToUserAccount(row: any): UserAccount {
+  return {
+    email: row.email,
+    password_hash: row.password_hash,
+    name: row.name,
+    age: row.age,
+    gender: row.gender,
+    height: row.height ? parseFloat(row.height) : undefined,
+    weight: row.weight ? parseFloat(row.weight) : undefined,
+    goal: row.goal,
+    level: row.level,
+    location: row.location,
+    dietaryPrefs: row.dietary_prefs,
+    medicalHistory: row.medical_history,
+    stressLevel: row.stress_level,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  }
+}
+
 export async function fetchPlanByEmail(email: string): Promise<PlanRecord | null> {
   await initPromise
+  // Fetch plan from user_plans and latest profile from user_accounts
   const { rows } = await pool.query(
-    `select email, user_data, plan, updated_at from ${TABLE} where email = $1 limit 1`,
+    `select 
+       p.email, 
+       p.plan, 
+       p.updated_at,
+       u.name, u.age, u.gender, u.height, u.weight, u.goal, u.level, u.location, 
+       u.dietary_prefs, u.medical_history, u.stress_level
+     from ${TABLE} p
+     left join ${USER_TABLE} u on p.email = u.email
+     where p.email = $1 limit 1`,
     [email],
   )
-  return (rows[0] as PlanRecord | undefined) || null
+  
+  if (!rows[0]) return null
+
+  const row = rows[0]
+  // Construct user_data from the joined user_accounts table
+  const user_data: Partial<UserData> = {
+    name: row.name,
+    age: row.age,
+    gender: row.gender,
+    height: row.height ? parseFloat(row.height) : undefined,
+    weight: row.weight ? parseFloat(row.weight) : undefined,
+    goal: row.goal,
+    level: row.level,
+    location: row.location,
+    dietaryPrefs: row.dietary_prefs,
+    medicalHistory: row.medical_history,
+    stressLevel: row.stress_level,
+  }
+
+  return {
+    email: row.email,
+    user_data,
+    plan: row.plan,
+    updated_at: row.updated_at,
+  }
 }
 
 export async function upsertPlanRecord(email: string, userData: Partial<UserData>, plan: PlanContent): Promise<PlanRecord> {
@@ -97,7 +150,15 @@ export async function fetchUserAccount(email: string): Promise<UserAccount | nul
     `select * from ${USER_TABLE} where email = $1 limit 1`,
     [email],
   )
-  return (rows[0] as UserAccount | undefined) || null
+  return rows[0] ? mapDbUserToUserAccount(rows[0]) : null
+}
+
+export async function updateUserPassword(email: string, passwordHash: string): Promise<void> {
+  await initPromise
+  await pool.query(
+    `update ${USER_TABLE} set password_hash = $2, updated_at = now() where email = $1`,
+    [email, passwordHash]
+  )
 }
 
 export async function upsertUserAccount(account: UserAccount): Promise<UserAccount> {
@@ -144,7 +205,7 @@ export async function upsertUserAccount(account: UserAccount): Promise<UserAccou
     ],
   )
 
-  return rows[0] as UserAccount
+  return mapDbUserToUserAccount(rows[0])
 }
 
 export async function updateUserProfile(email: string, profile: Partial<UserData>): Promise<UserAccount | null> {
@@ -182,5 +243,5 @@ export async function updateUserProfile(email: string, profile: Partial<UserData
       normalized.stressLevel,
     ],
   )
-  return (rows[0] as UserAccount | undefined) || null
+  return rows[0] ? mapDbUserToUserAccount(rows[0]) : null
 }
