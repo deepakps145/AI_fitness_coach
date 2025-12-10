@@ -112,62 +112,99 @@ const repairJson = (text)=>{
     cleaned = cleaned.replace(/,\s*([\]}])/g, '$1');
     return cleaned;
 };
-async function requestGemini(prompt) {
+async function requestGemini(prompt, retries = 3, delay = 1000) {
     if (!process.env.GEMINI_API_KEY) {
         throw new Error("GEMINI_API_KEY is not set");
     }
-    const geminiRes = await fetch(`${GEMINI_BASE}/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${process.env.GEMINI_API_KEY}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            contents: [
-                {
-                    role: "user",
-                    parts: [
+    for(let i = 0; i < retries; i++){
+        try {
+            const geminiRes = await fetch(`${GEMINI_BASE}/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    contents: [
                         {
-                            text: prompt
+                            role: "user",
+                            parts: [
+                                {
+                                    text: prompt
+                                }
+                            ]
                         }
-                    ]
+                    ],
+                    generationConfig: {
+                        temperature: 0.8,
+                        maxOutputTokens: 8192,
+                        responseMimeType: "application/json"
+                    }
+                })
+            });
+            if (!geminiRes.ok) {
+                const errorText = await geminiRes.text();
+                let errorJson;
+                try {
+                    errorJson = JSON.parse(errorText);
+                } catch  {
+                // If not JSON, use text
                 }
-            ],
-            generationConfig: {
-                temperature: 0.8,
-                maxOutputTokens: 8192,
-                responseMimeType: "application/json"
+                const status = geminiRes.status;
+                const message = errorJson?.error?.message || errorText;
+                // Handle 503 (Overloaded) and 429 (Rate Limit) with retries
+                if (status === 503 || status === 429) {
+                    if (i < retries - 1) {
+                        // Exponential backoff: 1s, 2s, 4s...
+                        const waitTime = delay * Math.pow(2, i);
+                        console.warn(`Gemini API ${status} error. Retrying in ${waitTime}ms...`);
+                        await new Promise((resolve)=>setTimeout(resolve, waitTime));
+                        continue;
+                    }
+                }
+                // If we are here, it's a fatal error or we ran out of retries
+                if (status === 429) {
+                    throw new Error("AI Usage Limit Exceeded. Please try again later.");
+                }
+                if (status === 503) {
+                    throw new Error("AI Service Overloaded. Please try again in a moment.");
+                }
+                throw new Error(message || `Gemini request failed with status ${status}`);
             }
-        })
-    });
-    if (!geminiRes.ok) {
-        const errorText = await geminiRes.text();
-        throw new Error(errorText || "Gemini request failed");
-    }
-    const geminiJson = await geminiRes.json();
-    const parts = geminiJson?.candidates?.[0]?.content?.parts;
-    const rawText = Array.isArray(parts) ? parts.map((p)=>{
-        if (typeof p?.text === "string") return p.text;
-        if (p?.inlineData?.data) {
-            try {
-                const buf = __TURBOPACK__imported__module__$5b$externals$5d2f$buffer__$5b$external$5d$__$28$buffer$2c$__cjs$29$__["Buffer"].from(p.inlineData.data, "base64").toString("utf8");
-                return buf;
-            } catch  {
+            const geminiJson = await geminiRes.json();
+            const parts = geminiJson?.candidates?.[0]?.content?.parts;
+            const rawText = Array.isArray(parts) ? parts.map((p)=>{
+                if (typeof p?.text === "string") return p.text;
+                if (p?.inlineData?.data) {
+                    try {
+                        const buf = __TURBOPACK__imported__module__$5b$externals$5d2f$buffer__$5b$external$5d$__$28$buffer$2c$__cjs$29$__["Buffer"].from(p.inlineData.data, "base64").toString("utf8");
+                        return buf;
+                    } catch  {
+                        return "";
+                    }
+                }
+                if (p?.json) {
+                    try {
+                        return JSON.stringify(p.json);
+                    } catch  {
+                        return "";
+                    }
+                }
                 return "";
+            }).join("\n").trim() : undefined;
+            if (!rawText) {
+                throw new Error("No content returned from Gemini");
             }
+            return rawText;
+        } catch (error) {
+            // If it's the last retry, rethrow
+            if (i === retries - 1) throw error;
+            // If it's a network error (fetch failed), wait and retry
+            const waitTime = delay * Math.pow(2, i);
+            console.warn(`Network error. Retrying in ${waitTime}ms...`, error);
+            await new Promise((resolve)=>setTimeout(resolve, waitTime));
         }
-        if (p?.json) {
-            try {
-                return JSON.stringify(p.json);
-            } catch  {
-                return "";
-            }
-        }
-        return "";
-    }).join("\n").trim() : undefined;
-    if (!rawText) {
-        throw new Error("No content returned from Gemini");
     }
-    return rawText;
+    throw new Error("Failed to connect to AI service after multiple attempts");
 }
 function parseJsonPayload(rawText) {
     try {
